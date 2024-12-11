@@ -1,3 +1,4 @@
+import logoimg from "./assets/logo.png";
 function NavBar() {
   const openLogin = () => {
     window.open("http://localhost:5173/Login");
@@ -9,11 +10,8 @@ function NavBar() {
   return (
     <>
       <nav className="w-full h-[80px] px-[50px] flex justify-between items-center text-white bg-orange-400 ">
-        <div>
-          <img
-            src="./assets/example.png "
-            className="w-fit h-fit font-bold outline-none"
-          />
+        <div className="">
+          <img src={logoimg} className="w-[100px] h-[80px] bg-orange-400" />
         </div>
         <ul className="flex justify-center text-center space-x-6 ">
           <li className="mx-[3] font-bold cursor-pointer">

@@ -9,7 +9,9 @@ import Layout from "./Layout.jsx";
 import Quiz from "./components/Quiz.jsx";
 import Login from "./components/Login.jsx";
 import Signup from "./components/Signup.jsx";
-import ErrorBoundary from "./components/Errorboundary.jsx";
+import Rag from "./components/quizComponents/Rag.jsx";
+import VoiceRag from "./components/quizComponents/VoiceRag.jsx";
+import FineTune from "./components/quizComponents/fineTune.jsx";
 
 const router = createBrowserRouter([
   {
@@ -22,11 +24,7 @@ const router = createBrowserRouter([
       },
       {
         path: "quiz",
-        element: (
-          <ErrorBoundary>
-            <Quiz />
-          </ErrorBoundary>
-        ),
+        element: <Quiz />,
       },
       {
         path: "",
@@ -39,6 +37,18 @@ const router = createBrowserRouter([
       {
         path: "signup",
         element: <Signup />,
+      },
+      {
+        path: "FineTune",
+        element: <FineTune />,
+      },
+      {
+        path: "Rag",
+        element: <Rag />,
+      },
+      {
+        path: "VoiceRag",
+        element: <VoiceRag />,
       },
     ],
   },
