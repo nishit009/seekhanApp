@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import downloadFile from "../assets/downloadFile.png";
 
 function FineTune() {
   const [topic, setTopic] = useState("");
@@ -80,9 +81,9 @@ function FineTune() {
   return (
     <div className="w-full h-screen bg-gray-900 flex items-center justify-center">
       <div className="w-[1100px] h-screen bg-gray-800 p-8 rounded-xl shadow-lg space-y-6 flex flex-col flex-wrap gap-y-[2px]">
-        <div className="flex-grow m-auto bg-gray-900 w-full">
+        <div className="flex-grow my-auto bg-gray-900 w-full flex flex-col">
           {error && (
-            <div className="bg-red-600 text-white p-2 rounded-lg">
+            <div className="bg-red-600 text-white p-2 rounded-lg ">
               <strong>Error:</strong> {error}
             </div>
           )}
@@ -103,9 +104,69 @@ function FineTune() {
           className="space-y-4 bg-gray-800 min-h-[150px]"
           onSubmit={pushAll}
         >
-          <div className="flex flex-row">
-            <div className="flex-grow"></div>
-            <div className="w-[300px] flex flex-col justify-center items-center"></div>
+          <div className="flex flex-row gap-x-5">
+            <div className="flex-grow space-y-2">
+              <div>
+                <label className="block text-white" htmlFor="topic">
+                  Enter the topic:
+                </label>
+                <input
+                  type="text"
+                  id="topic"
+                  value={topic}
+                  onChange={(e) => setTopic(e.target.value)}
+                  className="w-full p-3 rounded-lg bg-gray-600 text-white placeholder-gray-400"
+                  placeholder="Topic"
+                />
+              </div>
+              <div>
+                <label htmlFor="type" className="block text-white">
+                  Question Type:
+                </label>
+                <select
+                  name="type"
+                  className="w-full p-3 rounded-lg bg-gray-600 text-white placeholder-gray-400"
+                  onChange={(e) => setType(e.target.value)}
+                  value={type}
+                  defaultValue={"multiple-choice"}
+                >
+                  <option value="multiple-choice">Multiple Choice</option>
+                  <option value="true-false">True/False</option>
+                  <option value="fill-in-the-blank">Fill-in-the-Blank</option>
+                </select>
+              </div>
+            </div>
+            <div className="w-[300px] flex flex-col justify-center items-center gap-y-7">
+              <div className="w-[300px] flex flex-row justify-center items-center gap-x-2">
+                <div className="flex-grow">
+                  <label className="block text-white" htmlFor="questions">
+                    Number of questions:
+                  </label>
+                  <input
+                    type="number"
+                    id="questions"
+                    value={question}
+                    onChange={(e) => setQuestions(Number(e.target.value))}
+                    className="w-full p-3 rounded-lg bg-gray-600 text-white placeholder-gray-400"
+                    placeholder="Number of questions"
+                  />
+                </div>
+                <button>
+                  <img
+                    src={downloadFile}
+                    alt="Download File"
+                    className="w-[50px] h-[50px] mt-5"
+                  />
+                </button>
+              </div>
+              <button
+                type="submit"
+                className="w-full p-3 bg-blue-600 text-white rounded-lg"
+                disabled={loading}
+              >
+                {loading ? "Generating..." : "Generate Questions"}
+              </button>
+            </div>
           </div>
         </form>
       </div>

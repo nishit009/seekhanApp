@@ -49,7 +49,8 @@ def submit():
         classifier = pipeline(
             "zero-shot-classification",
             model=model1,tokenizer=tokenizerr,
-            framework="pt"
+            framework="pt",
+            device=-1
         )
         classification = classifier(topic, labels)
         if classification["labels"][0] in labels and classification["scores"][0] > 0.4:
