@@ -30,16 +30,14 @@ function NavBar() {
         <div className="space-x-2">
           <button
             className="outline-none bg-red-500 hover:bg-orange-400 w-fit h-fit px-2 font-bold py-2"
-            onClick={openLogin}
-          >
-            login
-          </button>
-          <button
-            className="outline-none bg-red-500 hover:bg-orange-400 w-fit h-fit px-2 font-bold py-2"
             onClick={openSignup}
           >
             signup
           </button>
+          <button
+            className="outline-none bg-red-500 hover:bg-orange-400 w-fit h-fit px-2 font-bold py-2"
+            onClick={openSignup}
+          ></button>
         </div>
       </nav>
     </>

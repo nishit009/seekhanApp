@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Rag from "./quizComponents/Rag";
+import logo from "./assets/logo.png";
 function Quiz() {
   function openFineTune() {
     window.location.href = "FineTune";
@@ -18,9 +19,11 @@ function Quiz() {
             <div className="lg:w-[200px] h-[300px] bg-gray-900 rounded-xl flex justify-center items-center">
               <div className="lg:w-[195px] h-[295px] bg-gray-800 rounded-xl hover:bg-gray-900">
                 <button
-                  className="w-full h-full hover:cursor-pointer"
+                  className="w-full h-full hover:cursor-pointer text-white"
                   onClick={openVoiceRag}
-                ></button>
+                >
+                  <img src={logo} alt="voice RAG" className="w-full" />
+                </button>
               </div>
             </div>
             <div className="lg:w-[200px] h-[300px] bg-gray-900 rounded-xl flex justify-center items-center">
