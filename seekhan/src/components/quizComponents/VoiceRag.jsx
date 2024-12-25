@@ -113,6 +113,7 @@ function VoiceRag() {
                     <input
                       type="number"
                       id="questions"
+                      min={1}
                       className="w-full p-3 rounded-lg bg-gray-600 text-white placeholder-gray-400"
                       placeholder="Number of questions"
                     />

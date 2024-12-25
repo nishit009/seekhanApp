@@ -97,3 +97,26 @@ app.post("/files", upload.single("file"), async (req, res) => {
     res.status(500).json({ error: "Something went wrong" });
   }
 });
+app.post("/rag", upload.single("file"), async (req, res) => {
+  try {
+    const file = req.file;
+    if (!file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const dirdownload = path.join(os.homedir(), "Downloads");
+    const targetPath = path.join(
+      dirdownload,
+      `${Date.now()}-${file.originalname}`
+    );
+    console.log(`File uploaded to: ${targetPath}`);
+
+    fs.renameSync(file.path, targetPath);
+    res
+      .status(200)
+      .json({ message: "File uploaded successfully", path: targetPath });
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});

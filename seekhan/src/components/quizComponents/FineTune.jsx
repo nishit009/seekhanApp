@@ -147,6 +147,7 @@ function FineTune() {
                     <input
                       type="number"
                       id="questions"
+                      min={1}
                       value={question}
                       onChange={(e) => setQuestions(Number(e.target.value))}
                       className="w-full p-3 rounded-lg bg-gray-600 text-white placeholder-gray-400"
