@@ -26,7 +26,7 @@ def format_docs(docs):
 # Define the Ollama LLM function
 def ollama_llm(question, context):
     formatted_prompt = f"Question: {question}\n\nContext: {context}"
-    response = ollama.chat(model='laddo', messages=[{'role': 'user', 'content': formatted_prompt}])
+    response = ollama.chat(model='seekhan', messages=[{'role': 'user', 'content': formatted_prompt}])
     return response['message']['content']
 
 # Define the RAG chain

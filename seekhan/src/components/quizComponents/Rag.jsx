@@ -9,22 +9,27 @@ function Rag() {
     numberOfQuestions: 0,
     loading: false,
     answers: "",
-    mainQusetion: "",
+    mainQuestion: "",
+    id: Date.now()
   });
   const [output, setOutput] = useState([]);
+  
   useEffect(() => {
     const savedOutput = localStorage.getItem("output");
     if (savedOutput) {
       setOutput(JSON.parse(savedOutput));
     }
   }, []);
+  
   useEffect(() => {
     localStorage.setItem("output", JSON.stringify(output));
   }, [output]);
+
   const fileUpdate = (e) => {
     const file = e.target.files[0];
     setDetails((prev) => ({ ...prev, file: file }));
   };
+
   const getQuestions = async (e) => {
     try {
       e.preventDefault();
@@ -40,43 +45,41 @@ function Rag() {
       });
       const answers = response.data.message;
       setDetails((prev) => ({ ...prev, answers: answers }));
-      setOutput((prev) => [...prev, details]);
+      setOutput((prev) => [...prev, { ...details, answers }]);
     } catch (error) {
       console.log(`error is this in post request ${error}`);
     }
     setDetails((prev) => ({ ...prev, loading: false }));
   };
+
   const getFileDownload = async () => {
     try {
       setDetails((prev) => ({ ...prev, loading: true }));
-      const dataFile = new Blob(details.answers, { type: ".txt" });
+      
+      const dataFile = new Blob([details.answers], { type: ".txt" });
+      console.log(details.answers,dataFile)
       const formData = new FormData();
       formData.append("file", dataFile);
-      const response_backend = await axios.post(
-        "http://localhost:6969/rag",
+      const response_backend = await fetch("http://localhost:6969/rag",
         {
-          mainQusetion: `generate ${details.numberOfQuestions} ${details.questionType} from the given ${details.file}`,
-          file: formData,
-        },
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          data:formData,
+          method:"POST"
         }
-      );
-      console.log(response_backend.data.message);
+      )
+      console.log(response_backend.data.json());
     } catch (error) {
       console.log(`error in the react to backend ${error}`);
     }
     setDetails((prev) => ({ ...prev, loading: false }));
   };
+
   return (
     <div className="w-full h-screen bg-gray-900 flex items-center justify-center">
       <div className="w-[1100px] h-screen bg-gray-800 p-8 rounded-xl shadow-lg space-y-6 flex flex-col gap-y-[2px]">
         <div className="flex-grow bg-gray-900 w-full flex flex-col h-auto overflow-y-auto scrollbar text-white">
-          {output.map((index, value) => (
+          {output.map((value,index) => (
             <div key={index}>
-              <label>{value.mainQusetion}</label>
+              <label>{value.mainQuestion}</label>
               <p>{value.answers}</p>
             </div>
           ))}

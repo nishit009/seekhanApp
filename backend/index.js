@@ -100,6 +100,7 @@ app.post("/files", upload.single("file"), async (req, res) => {
 app.post("/rag", upload.single("file"), async (req, res) => {
   try {
     const file = req.file;
+    console.log(req.file)
     if (!file) {
       return res.status(400).json({ error: "No file uploaded" });
     }
@@ -109,7 +110,7 @@ app.post("/rag", upload.single("file"), async (req, res) => {
       dirdownload,
       `${Date.now()}-${file.originalname}`
     );
-    console.log(`File uploaded to: ${targetPath}`);
+    // const targetPath = "C:\Users\spent\Downloads";
 
     fs.renameSync(file.path, targetPath);
     res
