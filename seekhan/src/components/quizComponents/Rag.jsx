@@ -57,14 +57,17 @@ function Rag() {
       // Set loading state to true while processing
       setDetails((prev) => ({ ...prev, loading: true }));
   
+      // Create a timestamp rounded to seconds (milliseconds removed)
+      const timestamp = Math.floor(Date.now() / 1000);
+  
       // Create a new Blob with the answers and specify the type as plain text
       const dataFile = new Blob([details.answers], { type: "text/plain" });
   
       // Create a link element
       const link = document.createElement("a");
   
-      // Set the download attribute with a filename
-      link.download = "answers.txt";
+      // Set the download attribute with a filename including the question type, number of questions, and timestamp (to seconds)
+      link.download = `answers_${details.questionType}_${details.numberOfQuestions}_q_${timestamp}.txt`;
   
       // Create a URL for the Blob and set it as the href of the link
       link.href = URL.createObjectURL(dataFile);
@@ -82,6 +85,7 @@ function Rag() {
     // Set loading state to false once the process is complete
     setDetails((prev) => ({ ...prev, loading: false }));
   };
+  
   
 
   return (
