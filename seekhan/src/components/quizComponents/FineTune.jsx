@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import download from "../assets/download.png";
+import downloadFile from "../assets/downloadFile.png";
 
 function FineTune() {
   const [topic, setTopic] = useState("");
@@ -63,26 +63,47 @@ function FineTune() {
       setLoading(false);
     }
   };
-  const getThefilesdownloaded = async () => {
-    const dataFile = new Blob([answers[answers.length - 1]], { type: ".txt" });
-    const formData = new FormData();
-    formData.append("file", dataFile);
+
+  const getFileDownload = async () => {
     try {
-      const response_file = await fetch("http://localhost:6969/files", {
-        method: "POST",
-        body: formData,
-      });
-      const resultFile = await response_file.json();
-      console.log(resultFile);
+      // Set loading state to true while processing
+      setLoading(true);
+
+      // Create a timestamp rounded to seconds (milliseconds removed)
+      const timestamp = Math.floor(Date.now() / 1000);
+
+      // Create a new Blob with the answers and specify the type as plain text
+      const dataFile = new Blob([answers.join("\n")], { type: "text/plain" });
+
+      // Create a link element
+      const link = document.createElement("a");
+
+      // Set the download attribute with a filename including the question type, number of questions, and timestamp (to seconds)
+      link.download = `answers_${type}_${question}_q_${timestamp}.txt`;
+
+      // Create a URL for the Blob and set it as the href of the link
+      link.href = URL.createObjectURL(dataFile);
+
+      // Programmatically click the link to trigger the download
+      link.click();
+
+      // Clean up the URL object
+      URL.revokeObjectURL(link.href);
     } catch (error) {
-      console.log(`error is this ${error}`);
+      console.log(`Error in the react to backend: ${error}`);
     }
+
+    // Set loading state to false once the process is complete
+    setLoading(false);
   };
 
   return (
     <div className="w-full h-screen bg-gray-900 flex items-center justify-center">
       <div className="w-[1100px] h-screen bg-gray-800 p-8 rounded-xl shadow-lg space-y-6 flex flex-col gap-y-[2px] ">
+      <p className="text-white text-4xl font-semibold mb-8">Ask AI</p>
+
         <div className="flex-grow bg-gray-900 w-full flex flex-col h-auto overflow-y-auto scrollbar text-white">
+          
           {error && (
             <div className="bg-red-600 text-white p-2 rounded-lg ">
               <strong>Error:</strong> {error}
@@ -169,11 +190,11 @@ function FineTune() {
             </div>
           </form>
           <div>
-            <button onClick={getThefilesdownloaded} className="ml-4">
+            <button onClick={getFileDownload}>
               <img
-                src={download}
+                src={downloadFile}
                 alt="Download File"
-                className="w-[50px] h-[50px] mt-6"
+                className="w-[50px] h-[50px] mt-5"
               />
             </button>
           </div>
