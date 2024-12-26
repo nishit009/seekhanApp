@@ -17,13 +17,13 @@ function NavBar() {
         </div>
         <ul className="flex justify-center text-center space-x-6 ">
           <li className="mx-[3] font-bold cursor-pointer">
-            <a href="home">home</a>
+            <a href="home">Home</a>
           </li>
           <li className="mx-[3] font-bold cursor-pointer">
-            <a href="about">about</a>
+            <a href="about">About</a>
           </li>
           <li className="mx-[3] font-bold cursor-pointer">
-            <a href="quiz">quiz</a>
+            <a href="quiz">Quiz</a>
           </li>
           
         </ul>
@@ -32,7 +32,7 @@ function NavBar() {
             className="outline-none bg-[#59AACF] hover:bg-[#011732] w-fit h-fit px-2 font-bold py-2"
             onClick={openSignup}
           >
-            signup
+            SignUp
           </button>
           <button
             className="outline-none bg-[#59AACF] hover:bg-[#011732] w-fit h-fit px-2 font-bold py-2"
