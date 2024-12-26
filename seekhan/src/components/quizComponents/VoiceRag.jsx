@@ -91,6 +91,7 @@ function VoiceRag() {
   return (
     <div className="w-full h-screen bg-gray-900 flex items-center justify-center">
       <div className="w-[1100px] h-screen bg-gray-800 p-8 rounded-xl shadow-lg space-y-6 flex flex-col gap-y-[2px]">
+      <p className="text-white text-4xl font-semibold mb-8">Generate from Transcript</p>
         <div className="flex-grow bg-gray-900 w-full flex flex-col h-auto overflow-y-auto scrollbar text-white">
           {output.map((value, index) => (
             <div key={index}>

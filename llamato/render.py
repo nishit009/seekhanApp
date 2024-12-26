@@ -71,6 +71,8 @@ def submit():
             "Web Development",
             "Internet of Things (IoT)",
             "Big Data",
+            "React Hooks",
+            "Data Abstraction",
             "Natural Language Processing",
             "Robotics",
             "Quantum Computing",
