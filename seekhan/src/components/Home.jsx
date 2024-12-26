@@ -5,9 +5,12 @@ import imagepath from "./assets/projectseekhan_logo.png";
 function Home() {
   return (
     <>
-      <header className="w-full h-screen font-bold text-blue-500 bg-black">
-        <div className="flex flex-wrap flex-col items-center justify-center relative">
-          <img src={imagepath} alt="" className="w-auto h-[150px]" />
+    <header className="w-full h-screen bg-black flex items-center justify-center">
+    <div className="relative flex flex-col items-center">
+      <img src={imagepath} alt="" className="w-auto h-[150px] " />
+      <p className="mt-4 text-white text-4xl font-semibold ">
+            Welcome to Seekhan!
+          </p>
           <a
             href="login"
             className="absolute mt-[250px] text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 

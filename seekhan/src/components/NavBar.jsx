@@ -25,9 +25,7 @@ function NavBar() {
           <li className="mx-[3] font-bold cursor-pointer">
             <a href="quiz">quiz</a>
           </li>
-          <li className="mx-[3] font-bold cursor-pointer">
-            <a href="xxx">xxx</a>
-          </li>
+          
         </ul>
         <div className="space-x-2">
           <button
