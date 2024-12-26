@@ -11,9 +11,19 @@ function Footer() {
             className="w-[100px] h-[100px] font-bold text-2xl"
           />
           <div>
-            <p>Email :projectseekhan@gmail.com</p>
-            <p>instagram : seekhan_quiz</p>
-            <p>contact us: 905971875</p>
+            <p>Email : projectseekhan@gmail.com</p>
+            <p>
+    Instagram:{" "}
+    <a
+      href="https://instagram.com/seekhan_quiz"
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{ color: "white", textDecoration: "underline" }}
+    >
+      seekhan_quiz
+    </a>
+  </p>
+            <p>Contact Us : 905971875</p>
           </div>
         </div>
       </footer>
