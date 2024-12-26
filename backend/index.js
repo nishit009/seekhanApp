@@ -153,3 +153,26 @@ app.post("/voicerag", upload.single("file"), async (req, res) => {
     res.status(500).json({ error: "Something went wrong" });
   }
 });
+
+app.post('/prompt',(req,res)=>{
+  try{
+  const {userPrompt,answer}=req.body;
+  console.log(userPrompt,answer);
+  const newPrompt=new prompt({promptInput:userPrompt,generatedAnswer:answer});
+  newPrompt.save();
+  res.status(200).json("Message Recieved");
+  }
+  catch(error){
+    console.log("This is error",error);
+  }
+})
+
+app.post("/voicerag",(req,res)=>{
+  try{
+   const {Type,no,ans}=req.body;
+   console.log(Type,no,ans);
+   res.status(200).send({"message":"Recieved"});}
+   catch(error){
+    console.log("Error Occured",error);
+   }
+})
