@@ -7,6 +7,7 @@ import NavBar from "./components/NavBar.jsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Layout from "./Layout.jsx";
 import Quiz from "./components/Quiz.jsx";
+import About from "./components/About.jsx";
 import Login from "./components/Login.jsx";
 import Signup from "./components/Signup.jsx";
 import Rag from "./components/quizComponents/Rag.jsx";
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
       {
         path: "",
         element: <Home />,
+      },
+      {
+        path: "about",
+        element: <About />
       },
       {
         path: "Login",
