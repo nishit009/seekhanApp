@@ -1,4 +1,6 @@
 import logoimg from "./assets/logo.png";
+import logoimg1 from "./assets/updated_logo.png"
+
 function NavBar() {
   const openLogin = () => {
     window.open("http://localhost:5173/Login");
@@ -9,9 +11,9 @@ function NavBar() {
 
   return (
     <>
-      <nav className="w-full h-[80px] px-[50px] flex justify-between items-center text-white bg-orange-400 ">
+      <nav className="w-full h-[80px] px-[50px] flex justify-between items-center text-white bg-[#002D62] ">
         <div className="">
-          <img src={logoimg} className="w-[100px] h-[80px] bg-orange-400" />
+          <img src={logoimg1} className="w-auto h-[30px]" />
         </div>
         <ul className="flex justify-center text-center space-x-6 ">
           <li className="mx-[3] font-bold cursor-pointer">
@@ -29,13 +31,13 @@ function NavBar() {
         </ul>
         <div className="space-x-2">
           <button
-            className="outline-none bg-red-500 hover:bg-orange-400 w-fit h-fit px-2 font-bold py-2"
+            className="outline-none bg-[#59AACF] hover:bg-[#011732] w-fit h-fit px-2 font-bold py-2"
             onClick={openSignup}
           >
             signup
           </button>
           <button
-            className="outline-none bg-red-500 hover:bg-orange-400 w-fit h-fit px-2 font-bold py-2"
+            className="outline-none bg-[#59AACF] hover:bg-[#011732] w-fit h-fit px-2 font-bold py-2"
             onClick={openSignup}
           ></button>
         </div>
