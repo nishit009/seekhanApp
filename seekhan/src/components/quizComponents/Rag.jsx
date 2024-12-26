@@ -54,24 +54,35 @@ function Rag() {
 
   const getFileDownload = async () => {
     try {
+      // Set loading state to true while processing
       setDetails((prev) => ({ ...prev, loading: true }));
-      
-      const dataFile = new Blob([details.answers], { type: ".txt" });
-      console.log(details.answers,dataFile)
-      const formData = new FormData();
-      formData.append("file", dataFile);
-      const response_backend = await fetch("http://localhost:6969/rag",
-        {
-          data:formData,
-          method:"POST"
-        }
-      )
-      console.log(response_backend.data.json());
+  
+      // Create a new Blob with the answers and specify the type as plain text
+      const dataFile = new Blob([details.answers], { type: "text/plain" });
+  
+      // Create a link element
+      const link = document.createElement("a");
+  
+      // Set the download attribute with a filename
+      link.download = "answers.txt";
+  
+      // Create a URL for the Blob and set it as the href of the link
+      link.href = URL.createObjectURL(dataFile);
+  
+      // Programmatically click the link to trigger the download
+      link.click();
+  
+      // Clean up the URL object
+      URL.revokeObjectURL(link.href);
+  
     } catch (error) {
-      console.log(`error in the react to backend ${error}`);
+      console.log(`Error in the react to backend: ${error}`);
     }
+  
+    // Set loading state to false once the process is complete
     setDetails((prev) => ({ ...prev, loading: false }));
   };
+  
 
   return (
     <div className="w-full h-screen bg-gray-900 flex items-center justify-center">
