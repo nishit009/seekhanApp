@@ -11,7 +11,7 @@ import Login from "./components/Login.jsx";
 import Signup from "./components/Signup.jsx";
 import Rag from "./components/quizComponents/Rag.jsx";
 import VoiceRag from "./components/quizComponents/VoiceRag.jsx";
-import FineTune from "./components/quizComponents/fineTune.jsx";
+import FineTune from "./components/quizComponents/FineTune.jsx";
 
 const router = createBrowserRouter([
   {
