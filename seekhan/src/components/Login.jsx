@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import {useNavigate} from "react-router-dom";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
   async function sendData() {
     try {
       const response = await fetch("http://localhost:6969/Login", {
@@ -15,7 +17,12 @@ function Login() {
         }),
       });
       const result = await response.json();
-      console.log(`Server response:${result}`);
+      if(result.success){
+        alert("Login successful! Redirecting to home page...");
+        navigate("/home");
+      }else {
+        alert("Invalid email or password. Please try again.");
+      }
     } catch (error) {
       console.log(`Error is this ${error}`);
     }

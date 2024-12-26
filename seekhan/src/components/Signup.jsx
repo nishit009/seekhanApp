@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import {useNavigate} from "react-router-dom";
 function Signup() {
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
@@ -6,6 +7,7 @@ function Signup() {
   const [phoneno, setPhoneno] = useState(0);
   const [gender, setGender] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevent the default form submission behavior
     sendData(); // Now call sendData to send the form data
@@ -27,7 +29,13 @@ function Signup() {
         }),
       });
       const result = await response.json();
-      console.log(result);
+      if(result.success){
+        alert("Signup successful! redirecting to login page...");
+        navigate("/login");
+      }
+      else{
+        alert("Signup failed. please try again");
+      }
     } catch (error) {
       console.log(`error is this ${error}`);
     }
