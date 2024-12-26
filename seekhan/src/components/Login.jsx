@@ -6,7 +6,7 @@ function Login() {
   const navigate = useNavigate();
   async function sendData() {
     try {
-      const response = await fetch("http://localhost:6969/Login", {
+      const response = await fetch("http://localhost:6969/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -16,18 +16,25 @@ function Login() {
           HashPw: password,
         }),
       });
+  
+      // Check if the response is OK
+      if (!response.ok) {
+        const errorResult = await response.json();
+        alert(errorResult.message || "An error occurred. Please try again.");
+        return;
+      }
+  
       const result = await response.json();
       if (result.success) {
         alert("Login successful! Redirecting to home page...");
         navigate("/home");
-      } else {
-        alert(result.message || "An error occurred. Please try again.");
       }
-      
     } catch (error) {
-      console.log(`Error is this ${error}`);
+      console.log(`Error occurred: ${error.message}`);
+      alert("An error occurred. Please try again later.");
     }
   }
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900">
       <div className="bg-gray-800 p-8 rounded shadow-md w-full max-w-md">

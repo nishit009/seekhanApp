@@ -8,6 +8,7 @@ import fs from "fs";
 import multer from "multer";
 import os from "os";
 import path from "path";
+import bcrypt from "bcrypt";
 
 const app = express();
 const PORT = 6969;
@@ -29,48 +30,54 @@ connectDB()
   .catch((error) => {
     console.log(`MongoDB connection failed:${error}`);
   });
-  app.post("/Login", async (req, res) => {
-    const { emailId, HashPw } = req.body;
+
+  app.post("/login", async (req, res) => {
+  const { emailId, HashPw } = req.body;
+
+  try {
+    // Find user by email
     const user = await User.findOne({ email: emailId });
- 
     if (!user) {
-        return res.status(404).json({ success: false, message: "User not found" });
+      return res.status(404).json({ success: false, message: "User not found" });
     }
- 
-    if (user.password !== HashPw) {
-        return res.status(401).json({ success: false, message: "Invalid password" });
+
+    // Compare the hashed password
+    const isPasswordValid = await bcrypt.compare(HashPw, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ success: false, message: "Invalid password" });
     }
- 
+
     res.status(200).json({ success: true, message: "Login successful", user });
- });
+  } catch (error) {
+    console.error(`Error during login: ${error.message}`);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
  
   
-  app.post("/signup", async (req, res) => {
-    const { fname, lname, emailId, pno, gen, HashPw } = req.body;
-    console.log(req.body);
-  
-    try {
-      const existingUser = await sign.findOne({ email: emailId });
-      if (existingUser) {
-        return res.status(409).json({ success: false, message: "User already exists" });
-      }
-  
-      const newSignup = new sign({
-        firstname: fname,
-        lastname: lname,
-        email: emailId,
-        phoneno: pno,
-        gender: gen,
-        password: HashPw,
-      });
-  
-      await newSignup.save();
-      res.status(201).json({ success: true, message: "Signup successful", sign: newSignup });
-    } catch (error) {
-      console.error(`Error during signup: ${error.message}`);
-      res.status(500).json({ success: false, message: "Server error" });
+ app.post("/signup", async (req, res) => {
+  const { fname, lname, emailId, pno, gen, HashPw } = req.body;
+
+  try {
+    const existingUser = await User.findOne({ email: emailId });
+    if (existingUser) {
+      return res.status(409).json({ success: false, message: "User already exists" });
     }
-  });
+
+    const newUser = new User({
+      email: emailId,
+      password: HashPw, // Will be hashed automatically
+    });
+
+    await newUser.save();
+    res.status(201).json({ success: true, message: "Signup successful", user: newUser });
+  } catch (error) {
+    console.error(`Error during signup: ${error.message}`);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
   
 app.post("/files", upload.single("file"), async (req, res) => {
   try {
