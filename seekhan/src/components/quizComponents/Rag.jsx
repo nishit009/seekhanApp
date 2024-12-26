@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import download from "../assets/download.png";
+import downloadFile from "../assets/downloadFile.png";
 import axios from "axios";
 
 function Rag() {
@@ -169,11 +169,11 @@ function Rag() {
             </div>
           </form>
           <div>
-            <button onClick={getFileDownload} className="ml-4">
+            <button onClick={getFileDownload}>
               <img
-                src={download}
+                src={downloadFile}
                 alt="Download File"
-                className="w-[50px] h-[50px] mt-7"
+                className="w-[50px] h-[50px] mt-5"
               />
             </button>
           </div>
