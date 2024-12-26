@@ -17,12 +17,13 @@ function Login() {
         }),
       });
       const result = await response.json();
-      if(result.success){
+      if (result.success) {
         alert("Login successful! Redirecting to home page...");
         navigate("/home");
-      }else {
-        alert("Invalid email or password. Please try again.");
+      } else {
+        alert(result.message || "An error occurred. Please try again.");
       }
+      
     } catch (error) {
       console.log(`Error is this ${error}`);
     }

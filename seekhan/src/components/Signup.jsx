@@ -29,13 +29,13 @@ function Signup() {
         }),
       });
       const result = await response.json();
-      if(result.success){
-        alert("Signup successful! redirecting to login page...");
+      if (result.success) {
+        alert("Signup successful! Redirecting to login page...");
         navigate("/login");
+      } else {
+        alert(result.message || "Signup failed. Please try again.");
       }
-      else{
-        alert("Signup failed. please try again");
-      }
+      
     } catch (error) {
       console.log(`error is this ${error}`);
     }
