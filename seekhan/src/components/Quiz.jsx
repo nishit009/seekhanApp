@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Rag from "./quizComponents/Rag";
-import logo from "./assets/logo.png";
+import logo1 from "./assets/teacher.png";
+import logo2 from "./assets/robot-assistant.png";
+import logo3 from "./assets/documentation.png";
 function Quiz() {
   function openFineTune() {
     window.location.href = "FineTune";
@@ -22,7 +24,8 @@ function Quiz() {
                   className="w-full h-full hover:cursor-pointer text-white"
                   onClick={openVoiceRag}
                 >
-                  <img src={logo} alt="voice RAG" className="w-full" />
+                  <img src={logo1} alt="voice RAG" className="w-full" />
+                  <span className="mt-2 text-sm text-white">I have a Lecture File</span> 
                 </button>
               </div>
             </div>
@@ -31,7 +34,10 @@ function Quiz() {
                 <button
                   className="w-full h-full hover:cursor-pointer"
                   onClick={openRag}
-                ></button>
+                >
+                  <img src={logo3} alt="PDF upload" className="w-full" />
+                  <span className="mt-2 text-sm text-white">I have a PDF</span> 
+                </button>
               </div>
             </div>
             <div className="lg:w-[200px] h-[300px] bg-gray-900 rounded-xl flex justify-center items-center">
@@ -39,7 +45,10 @@ function Quiz() {
                 <button
                   className="w-full h-full hover:cursor-pointer"
                   onClick={openFineTune}
-                ></button>
+                >
+                  <img src={logo2} alt="Generate" className="w-full" />
+                  <span className="mt-2 text-sm text-white">I have a Topic</span> 
+                </button>
               </div>
             </div>
           </div>
