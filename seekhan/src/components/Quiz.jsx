@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Rag from "./quizComponents/Rag";
 import logo1 from "./assets/teacher.png";
 import logo2 from "./assets/robot-assistant.png";
-import logo3 from "./assets/documentation.png";
+import logo3 from "./assets/file.png";
 function Quiz() {
   function openFineTune() {
     window.location.href = "FineTune";

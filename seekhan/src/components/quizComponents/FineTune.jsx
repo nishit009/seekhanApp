@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import downloadFile from "../assets/downloadFile.png";
+import download from "../assets/download.png";
 
 function FineTune() {
   const [topic, setTopic] = useState("");
@@ -169,11 +169,11 @@ function FineTune() {
             </div>
           </form>
           <div>
-            <button onClick={getThefilesdownloaded}>
+            <button onClick={getThefilesdownloaded} className="ml-4">
               <img
-                src={downloadFile}
+                src={download}
                 alt="Download File"
-                className="w-[50px] h-[50px] mt-5"
+                className="w-[50px] h-[50px] mt-6"
               />
             </button>
           </div>
