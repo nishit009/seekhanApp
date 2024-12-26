@@ -130,8 +130,11 @@ function FineTune() {
                     className="w-full p-3 rounded-lg bg-gray-600 text-white placeholder-gray-400"
                     onChange={(e) => setType(e.target.value)}
                     value={type}
-                    defaultValue={"multiple-choice"}
+                    defaultValue=""
                   >
+                    <option value="" disabled>
+                      ------- Select Question Type -------
+                    </option>
                     <option value="multiple-choice">Multiple Choice</option>
                     <option value="true-false">True/False</option>
                     <option value="fill-in-the-blank">Fill-in-the-Blank</option>

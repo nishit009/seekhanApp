@@ -1,17 +1,17 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import downloadFile from "../assets/downloadFile.png";
 import axios from "axios";
 
 function Rag() {
-  const [details, setDetails] = useEffect({
+  const [details, setDetails] = useState({
     file: null,
     questionType: "",
     numberOfQuestions: 0,
     loading: false,
     answers: "",
-    mainQusetion: `generate ${numberOfQuestions} ${questionType} from the give file ${file}`,
+    mainQusetion: "",
   });
-  const [output, setOutput] = useEffect([]);
+  const [output, setOutput] = useState([]);
   useEffect(() => {
     const savedOutput = localStorage.getItem("output");
     if (savedOutput) {
@@ -24,7 +24,6 @@ function Rag() {
   const fileUpdate = (e) => {
     const file = e.target.files[0];
     setDetails((prev) => ({ ...prev, file: file }));
-    setOutput((prev) => ({ ...prev, file: file }));
   };
   const getQuestions = async (e) => {
     try {
@@ -34,13 +33,14 @@ function Rag() {
       formData.append("type", details.questionType);
       formData.append("number", details.numberOfQuestions);
       formData.append("file", details.file);
-      const response = await axios.post("http://127.0.0.1:5000/rag", formData, {
+      const response = await axios.post("http://127.0.0.1:5000/Rag", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
       const answers = response.data.message;
       setDetails((prev) => ({ ...prev, answers: answers }));
+      setOutput((prev) => [...prev, details]);
     } catch (error) {
       console.log(`error is this in post request ${error}`);
     }
@@ -55,7 +55,7 @@ function Rag() {
       const response_backend = await axios.post(
         "http://localhost:6969/rag",
         {
-          mainQusetion: details.mainQusetion,
+          mainQusetion: `generate ${details.numberOfQuestions} ${details.questionType} from the given ${details.file}`,
           file: formData,
         },
         {
@@ -105,7 +105,6 @@ function Rag() {
                   </label>
                   <select
                     name="type"
-                    value={details.questionType}
                     onChange={(e) =>
                       setDetails((prev) => ({
                         ...prev,
@@ -113,8 +112,11 @@ function Rag() {
                       }))
                     }
                     className="w-full p-3 rounded-lg bg-gray-600 text-white placeholder-gray-400"
-                    defaultValue={"multiple-choice"}
+                    defaultValue=""
                   >
+                    <option value="" disabled>
+                      ------- Select Question Type -------
+                    </option>
                     <option value="multiple-choice">Multiple Choice</option>
                     <option value="true-false">True/False</option>
                     <option value="fill-in-the-blank">Fill-in-the-Blank</option>

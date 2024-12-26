@@ -6,6 +6,12 @@ import logging
 import torch
 from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
 import os
+from langchain.schema import Document
+from langchain_community.vectorstores import Chroma
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_ollama import OllamaEmbeddings
+from PyPDF2 import PdfReader
+from RAG import extract_text_from_pdf,ollama_llm,rag_chain,format_docs
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0" 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"  
 import warnings
@@ -14,11 +20,15 @@ warnings.filterwarnings("ignore", category=UserWarning)
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}) 
 logging.basicConfig(level=logging.INFO)
+UPLOAD_FOLDER = './uploads'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 try:
     model = OllamaLLM(model="seekhan")
 except Exception as e:
     logging.error(f"Failed to initialize model: {e}")
     model = None
+    
 
 @app.route('/submit', methods=['POST'])
 def submit():
@@ -67,6 +77,48 @@ def submit():
     except Exception as e:
         logging.error(f"Error generating questions: {e}")
         return jsonify({"error": f"Internal server error: {str(e)}"}), 500
+    
+@app.route("/Rag",methods=["POST","GET"])
+def main():
+    try:
+        qType = request.form.get('type', None)
+        numberOfQ=request.form.get("number",None)
+        file = request.files.get('file', None)
+        
+        if not qType or not numberOfQ or not file:
+            logging.warning("Missing 'qType' or 'numberOfQ' or 'file'in the request.")
+            return jsonify({"message": "qtype or numberOfQ or file is missing"}), 400
+        
+        logging.info(f"Received file submission: type={qType}, Filename={file.filename} ,number={numberOfQ}")
+        if file.filename.endswith('.pdf'):
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+            file.save(file_path)
+            document_text=extract_text_from_pdf(file_path)
+            text_splitter=RecursiveCharacterTextSplitter(chunk_size=1000,chunk_overlap=200)
+            splits=text_splitter.split_text(document_text)
+            
+            documents=[Document(page_content=text) for text in  splits]
+            embeddings=OllamaEmbeddings(model="seekhan")
+            vectorstore = Chroma.from_documents(documents=documents, embedding=embeddings)
+            
+            retriever = vectorstore.as_retriever()
+            
+            Prompt = f"Generate {numberOfQ} {qType}"
+            result = rag_chain(Prompt)
+        else:
+            logging.info("File is not a PDF. No further processing.")
+            return jsonify({"message":"only .pdf accept"})
+        
+        logging.info(f"generated Text (if any): {result}")
+        return jsonify({
+            "message": f"generated text {result}",
+        }), 200
+        
+        
+    except Exception as e:
+        logging.error(f"Error generating questions: {e}")
+        return jsonify({"error": f"Internal server error: {str(e)}"}), 500
+        
 # def file():
 #     try:
 #         express_url="http://localhost:6969/files"
