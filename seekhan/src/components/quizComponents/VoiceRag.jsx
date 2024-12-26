@@ -1,5 +1,5 @@
 import React from "react";
-import downloadFile from "../assets/downloadFile.png";
+import download from "../assets/download.png";
 
 function VoiceRag() {
   return (
@@ -129,11 +129,11 @@ function VoiceRag() {
             </div>
           </form>
           <div>
-            <button>
+            <button className="ml-4">
               <img
-                src={downloadFile}
+                src={download}
                 alt="Download File"
-                className="w-[50px] h-[50px] mt-5"
+                className="w-[50px] h-[50px] mt-7"
               />
             </button>
           </div>
