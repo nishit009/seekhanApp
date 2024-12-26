@@ -169,11 +169,11 @@ function Rag() {
             </div>
           </form>
           <div>
-            <button onClick={getFileDownload}>
+            <button onClick={getFileDownload} className="ml-4">
               <img
                 src={downloadFile}
                 alt="Download File"
-                className="w-[50px] h-[50px] mt-5"
+                className="w-[50px] h-[50px] mt-7"
               />
             </button>
           </div>
