@@ -1,91 +1,117 @@
-import React from "react";
-import download from "../assets/download.png";
+import React, { useEffect, useState } from "react";
+import downloadFile from "../assets/downloadFile.png";
+import axios from "axios";
 
 function VoiceRag() {
+  const [details, setDetails] = useState({
+    file: null,
+    questionType: "",
+    numberOfQuestions: 0,
+    loading: false,
+    answers: "",
+    mainQuestion: "",
+    id: Date.now(),
+  });
+  const [output, setOutput] = useState([]);
+
+  useEffect(() => {
+    const savedOutput = localStorage.getItem("output");
+    if (savedOutput) {
+      setOutput(JSON.parse(savedOutput));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("output", JSON.stringify(output));
+  }, [output]);
+
+  const fileUpdate = (e) => {
+    const file = e.target.files[0];
+    setDetails((prev) => ({ ...prev, file: file }));
+  };
+
+  const getQuestions = async (e) => {
+    try {
+      e.preventDefault();
+      setDetails((prev) => ({ ...prev, loading: true }));
+      const formData = new FormData();
+      formData.append("type", details.questionType);
+      formData.append("number", details.numberOfQuestions);
+      formData.append("file", details.file);
+      console.log("Hi");
+
+      const response = await axios.post("http://127.0.0.1:5000/VoiceRag", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const answers = response.data.message;
+      setDetails((prev) => ({ ...prev, answers: answers }));
+      setOutput((prev) => [...prev, { ...details, answers }]);
+    } catch (error) {
+      console.log(`Error in the POST request: ${error}`);
+    }
+    setDetails((prev) => ({ ...prev, loading: false }));
+  };
+
+  const getFileDownload = async () => {
+    try {
+      // Set loading state to true while processing
+      setDetails((prev) => ({ ...prev, loading: true }));
+
+      // Create a timestamp rounded to seconds (milliseconds removed)
+      const timestamp = Math.floor(Date.now() / 1000);
+
+      // Create a new Blob with the answers and specify the type as plain text
+      const dataFile = new Blob([details.answers], { type: "text/plain" });
+
+      // Create a link element
+      const link = document.createElement("a");
+
+      // Set the download attribute with a filename including the question type, number of questions, and timestamp (to seconds)
+      link.download = `answers_${details.questionType}_${details.numberOfQuestions}_q_${timestamp}.txt`;
+
+      // Create a URL for the Blob and set it as the href of the link
+      link.href = URL.createObjectURL(dataFile);
+
+      // Programmatically click the link to trigger the download
+      link.click();
+
+      // Clean up the URL object
+      URL.revokeObjectURL(link.href);
+    } catch (error) {
+      console.log(`Error in the file download: ${error}`);
+    }
+
+    // Set loading state to false once the process is complete
+    setDetails((prev) => ({ ...prev, loading: false }));
+  };
+
   return (
     <div className="w-full h-screen bg-gray-900 flex items-center justify-center">
       <div className="w-[1100px] h-screen bg-gray-800 p-8 rounded-xl shadow-lg space-y-6 flex flex-col gap-y-[2px]">
         <div className="flex-grow bg-gray-900 w-full flex flex-col h-auto overflow-y-auto scrollbar text-white">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat
-          dolorum vitae dolore, voluptatibus consequuntur doloribus illum
-          recusandae voluptate magnam amet iure ipsum ullam provident nesciunt
-          assumenda, quod facilis. Non, id. Placeat assumenda qui cum, corporis
-          iure neque culpa possimus expedita! Quasi distinctio earum repellat
-          assumenda atque ad perferendis nostrum magnam. Similique, perferendis
-          accusantium rem praesentium sapiente mollitia sed neque laborum.
-          Cupiditate ut pariatur, doloremque quos fugit praesentium cumque
-          nobis? Commodi repellat id incidunt sunt a porro adipisci reiciendis
-          laboriosam! Dolor rem illum asperiores tempore modi repellat possimus
-          minus eaque at? Saepe, deserunt harum architecto iure laborum dolore
-          impedit error necessitatibus quod, ipsa molestias aliquid. Quod a,
-          aliquam nihil dolore minus, laudantium iste assumenda tenetur quo
-          illum temporibus aperiam, obcaecati asperiores. Corporis earum
-          aspernatur asperiores consectetur vel, nobis rem saepe nam praesentium
-          temporibus magni assumenda eum deserunt at minus officiis commodi
-          perspiciatis fuga reprehenderit maxime repellat quaerat, quibusdam
-          possimus quis. Culpa? Incidunt, fuga vero error ab blanditiis odit eum
-          amet ex esse qui quidem, totam placeat aut nostrum ducimus animi
-          doloribus modi reiciendis, vel deleniti saepe quaerat quisquam odio?
-          Sint, corporis. Optio ratione consequatur at! Iste labore odit libero.
-          Dolores officia praesentium laborum, suscipit veritatis facilis. Sit
-          eum cumque ratione. Tempora doloribus obcaecati dolore officiis
-          libero. Voluptas minus eveniet consequuntur magni! Rem,
-          exercitationem. Alias quaerat rerum quia dolorum debitis nesciunt
-          soluta dolor impedit consequuntur inventore, nulla cumque sequi natus
-          quae illo fugit accusamus quam tempora? Fugiat iste animi nulla at
-          nemo! Reiciendis nisi ea mollitia nesciunt a similique unde aliquid?
-          Reiciendis modi eligendi tenetur placeat. Commodi dolore impedit fuga
-          omnis dolorem, mollitia exercitationem adipisci repudiandae id aut
-          vero aliquid itaque perspiciatis. Provident, nostrum! Temporibus
-          blanditiis atque placeat accusamus est labore sapiente quam facilis
-          qui suscipit animi, eos adipisci? Exercitationem non nostrum
-          voluptatem, voluptates rem excepturi ad, quia at iusto, provident
-          ipsum! Asperiores non eius quos earum qui. At blanditiis aperiam
-          minima quaerat qui maxime distinctio, deserunt facere. Rem recusandae
-          maxime corrupti aperiam temporibus, voluptate a quisquam dolores!
-          Reprehenderit corporis esse deserunt. Unde eos placeat dolorem alias,
-          nostrum eligendi, praesentium sed illo a beatae vel nulla aliquam iste
-          earum deserunt deleniti molestias temporibus? Illum officia, nisi
-          sapiente alias assumenda iusto esse recusandae! Nihil magnam fugit
-          doloremque obcaecati dolores dicta nemo ad odit sequi, quisquam
-          facilis sapiente quos atque quibusdam quod velit tenetur, eveniet
-          natus? Dicta incidunt, odio quo ipsum reiciendis velit rerum!
-          Reprehenderit laboriosam sunt deserunt maiores officia, dolores quia
-          eius maxime error mollitia itaque. Suscipit quisquam nesciunt quam
-          tempore quod impedit ducimus eligendi libero sunt sint. Facilis,
-          assumenda. Sunt, vitae et! Veritatis officia libero, ut est quidem
-          modi nisi, totam praesentium iure repellat maiores alias magnam!
-          Voluptates animi doloremque, aperiam quia sequi libero quibusdam!
-          Distinctio cumque minima in sint aut hic? Pariatur amet dolor nihil
-          voluptates similique, quae reiciendis cum ab autem itaque ad eaque
-          vitae fuga deserunt. Numquam quam nam aut ratione assumenda distinctio
-          explicabo voluptate. Saepe veritatis laboriosam et. Recusandae nihil
-          dolor dolorum ea eaque consectetur quia eos explicabo, earum tenetur
-          pariatur officia itaque corrupti similique veritatis magni sit harum
-          temporibus! Omnis, dolores! Molestias explicabo ullam placeat iusto
-          quidem. Inventore similique sit maiores, praesentium, assumenda
-          suscipit quae eaque voluptatibus possimus iste nihil beatae cum sunt
-          nam quasi quam aliquid voluptatum incidunt excepturi odit
-          necessitatibus aliquam? Soluta doloremque asperiores eveniet. Rem
-          nulla labore error adipisci amet deserunt, ducimus obcaecati magni
-          explicabo aliquam eaque iure maiores sint temporibus aspernatur enim
-          aperiam dolorem itaque eum, quasi quam dignissimos. Tempore quisquam
-          omnis amet. Labore veniam eum tempore aspernatur excepturi at officia
-          totam. Possimus doloremque hic aperiam laborum soluta magni laudantium
-          consequuntur eos. Exercitationem nihil quisquam corrupti natus et,
-          esse tempore quasi cumque nobis.
+          {output.map((value, index) => (
+            <div key={index}>
+              <label>{value.mainQuestion}</label>
+              <p>{value.answers}</p>
+            </div>
+          ))}
         </div>
         <div className="flex flex-row">
-          <form className="space-y-4 bg-gray-800 min-h-[150px] flex-grow">
+          <form className="space-y-4 bg-gray-800 min-h-[150px] flex-grow" onSubmit={getQuestions}>
             <div className="flex flex-row gap-x-5">
               <div className="flex-grow space-y-2">
                 <div>
                   <label className="block text-white" htmlFor="file">
-                    Upload a MP3file:
+                    Upload an MP3 file:
                   </label>
                   <input
                     type="file"
                     id="file"
+                    accept=".mp3"
+                    onChange={fileUpdate}
                     className="w-full p-3 rounded-lg bg-gray-600 text-white placeholder-gray-400"
                   />
                 </div>
@@ -95,9 +121,18 @@ function VoiceRag() {
                   </label>
                   <select
                     name="type"
+                    onChange={(e) =>
+                      setDetails((prev) => ({
+                        ...prev,
+                        questionType: e.target.value,
+                      }))
+                    }
                     className="w-full p-3 rounded-lg bg-gray-600 text-white placeholder-gray-400"
-                    defaultValue={"multiple-choice"}
+                    defaultValue=""
                   >
+                    <option value="" disabled>
+                      ------- Select Question Type -------
+                    </option>
                     <option value="multiple-choice">Multiple Choice</option>
                     <option value="true-false">True/False</option>
                     <option value="fill-in-the-blank">Fill-in-the-Blank</option>
@@ -114,27 +149,27 @@ function VoiceRag() {
                       type="number"
                       id="questions"
                       min={1}
+                      value={details.numberOfQuestions}
+                      onChange={(e) =>
+                        setDetails((prev) => ({
+                          ...prev,
+                          numberOfQuestions: e.target.value,
+                        }))
+                      }
                       className="w-full p-3 rounded-lg bg-gray-600 text-white placeholder-gray-400"
                       placeholder="Number of questions"
                     />
                   </div>
                 </div>
-                <button
-                  type="button"
-                  className="w-full p-3 bg-blue-600 text-white rounded-lg"
-                >
-                  Generate Questions
+                <button type="submit" className="w-full p-3 bg-blue-600 text-white rounded-lg">
+                  {details.loading ? "Generating..." : "Generate Questions"}
                 </button>
               </div>
             </div>
           </form>
           <div>
-            <button className="ml-4">
-              <img
-                src={download}
-                alt="Download File"
-                className="w-[50px] h-[50px] mt-7"
-              />
+            <button onClick={getFileDownload} className="ml-4">
+              <img src={downloadFile} alt="Download File" className="w-[50px] h-[50px] mt-7" />
             </button>
           </div>
         </div>

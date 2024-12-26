@@ -119,3 +119,30 @@ app.post("/rag", upload.single("file"), async (req, res) => {
     res.status(500).json({ error: "Something went wrong" });
   }
 });
+
+// voice rag
+
+app.post("/voicerag", upload.single("file"), async (req, res) => {
+  try {
+    const file = req.file;
+    console.log(req.file)
+    if (!file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const dirdownload = path.join(os.homedir(), "Downloads");
+    const targetPath = path.join(
+      dirdownload,
+      `${Date.now()}-${file.originalname}`
+    );
+    // const targetPath = "C:\Users\spent\Downloads";
+
+    fs.renameSync(file.path, targetPath);
+    res
+      .status(200)
+      .json({ message: "File uploaded successfully", path: targetPath });
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
