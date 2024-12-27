@@ -14,13 +14,13 @@ function VoiceRag() {
   });
   const [output, setOutput] = useState([]);
 
- useEffect(() => {
+  useEffect(() => {
     const savedOutput = localStorage.getItem("output");
     if (savedOutput) {
       setOutput(JSON.parse(savedOutput));
     }
   }, []);
-  
+
   useEffect(() => {
     localStorage.setItem("output", JSON.stringify(output));
   }, [output]);
@@ -48,10 +48,8 @@ function VoiceRag() {
 
       const answers = response.data.message;
       setDetails((prev) => ({ ...prev, answers: answers }));
-      setOutput((prev) => [...prev,  { ...details, answers }]);
-
+      setOutput((prev) => [...prev, { ...details, answers }]);
     } catch (error) {
-      setOutput((prev) => [...prev, error]);
       console.log(`Error in the POST request: ${error}`);
     }
     setDetails((prev) => ({ ...prev, loading: false }));
@@ -59,8 +57,6 @@ function VoiceRag() {
 
   const getFileDownload = async () => {
     try {
-      // const response= await axios.post("http://localhost:6969/voicerag",{Type:details.questionType,no: details.numberOfQuestions,ans:details.answers});
-      // console.log(response.data.message);
       // Set loading state to true while processing
       setDetails((prev) => ({ ...prev, loading: true }));
 

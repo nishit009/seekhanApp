@@ -20,10 +20,10 @@ function NavBar() {
             <a href="home">Home</a>
           </li>
           <li className="mx-[3] font-bold cursor-pointer">
-            <a href="quiz">Quiz</a>
+            <a href="about">About</a>
           </li>
           <li className="mx-[3] font-bold cursor-pointer">
-            <a href="about">About</a>
+            <a href="quiz">Quiz</a>
           </li>
           
         </ul>
