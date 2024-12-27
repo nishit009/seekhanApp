@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
-import {useNavigate} from "react-router-dom";
+import { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "./AuthorContext";
 function Signup() {
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
@@ -8,6 +9,7 @@ function Signup() {
   const [gender, setGender] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevent the default form submission behavior
     sendData(); // Now call sendData to send the form data
@@ -35,7 +37,6 @@ function Signup() {
       } else {
         alert(result.message || "Signup failed. Please try again.");
       }
-      
     } catch (error) {
       console.log(`error is this ${error}`);
     }

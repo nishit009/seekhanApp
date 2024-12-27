@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
-import {useNavigate} from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "./AuthorContext";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
   async function sendData() {
     try {
       const response = await fetch("http://localhost:6969/login", {
@@ -16,16 +18,18 @@ function Login() {
           HashPw: password,
         }),
       });
-  
+
       // Check if the response is OK
       if (!response.ok) {
         const errorResult = await response.json();
         alert(errorResult.message || "An error occurred. Please try again.");
         return;
       }
-  
+
       const result = await response.json();
       if (result.success) {
+        console.log(result);
+        login(result.message);
         alert("Login successful! Redirecting to home page...");
         navigate("/home");
       }
@@ -34,7 +38,7 @@ function Login() {
       alert("An error occurred. Please try again later.");
     }
   }
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900">
       <div className="bg-gray-800 p-8 rounded shadow-md w-full max-w-md">

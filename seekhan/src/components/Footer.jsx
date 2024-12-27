@@ -4,29 +4,26 @@ function Footer() {
   return (
     <>
       <footer className="w-full px-4 bg-gray-800 text-white pt-8 flex flex-col justify-between">
-        <div className="bg-white w-full h-[2px]"></div>
+        <div className="bg-white w-full h-[1.5px] mb-[20px]"></div>
         <div className="flex flex-wrap justify-between items-center">
           <img
             src={logo}
             alt="logo"
             className="w-auto h-[50px] font-bold text-2xl"
           />
-          <div className="flex flex-row space-x-6">
-            <p>Email: projectseekhan@gmail.com</p>
-            <p>
-              Instagram:{" "}
-              <a
-                href="https://instagram.com/seekhan_quiz"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: "white", textDecoration: "underline" }}
-              >
-                seekhan_quiz
-              </a>
-            </p>
-            <p>Contact Us: 905971875</p>
-            
-          </div>
+          <p>Email: projectseekhan@gmail.com</p>
+          <p>
+            Instagram:{" "}
+            <a
+              href="https://instagram.com/seekhan_quiz"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "white" }}
+            >
+              seekhan_quiz
+            </a>
+          </p>
+          <p>Contact Us: 9059718675</p>
         </div>
         <div className="flex justify-center">
           <p className="text-sm text-center">

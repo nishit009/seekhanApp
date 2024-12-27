@@ -40,16 +40,22 @@ function VoiceRag() {
       formData.append("file", details.file);
       console.log("Hi");
 
-      const response = await axios.post("http://127.0.0.1:5000/VoiceRag", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        "http://127.0.0.1:5000/VoiceRag",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       const answers = response.data.message;
       setDetails((prev) => ({ ...prev, answers: answers }));
       setOutput((prev) => [...prev, { ...details, answers }]);
     } catch (error) {
+      setDetails((prev) => ({ ...prev, answers: error }));
+      console.log(`this is the answers in details ${details.answers}`);
       console.log(`Error in the POST request: ${error}`);
     }
     setDetails((prev) => ({ ...prev, loading: false }));
@@ -91,7 +97,9 @@ function VoiceRag() {
   return (
     <div className="w-full h-screen bg-gray-900 flex items-center justify-center">
       <div className="w-[1100px] h-screen bg-gray-800 p-8 rounded-xl shadow-lg space-y-6 flex flex-col gap-y-[2px]">
-      <p className="text-white text-4xl font-semibold mb-8">Generate from Transcript</p>
+        <p className="text-white text-4xl font-semibold mb-8">
+          Generate from Transcript
+        </p>
         <div className="flex-grow bg-gray-900 w-full flex flex-col h-auto overflow-y-auto scrollbar text-white">
           {output.map((value, index) => (
             <div key={index}>
@@ -101,7 +109,10 @@ function VoiceRag() {
           ))}
         </div>
         <div className="flex flex-row">
-          <form className="space-y-4 bg-gray-800 min-h-[150px] flex-grow" onSubmit={getQuestions}>
+          <form
+            className="space-y-4 bg-gray-800 min-h-[150px] flex-grow"
+            onSubmit={getQuestions}
+          >
             <div className="flex flex-row gap-x-5">
               <div className="flex-grow space-y-2">
                 <div>
@@ -162,7 +173,10 @@ function VoiceRag() {
                     />
                   </div>
                 </div>
-                <button type="submit" className="w-full p-3 bg-blue-600 text-white rounded-lg">
+                <button
+                  type="submit"
+                  className="w-full p-3 bg-blue-600 text-white rounded-lg"
+                >
                   {details.loading ? "Generating..." : "Generate Questions"}
                 </button>
               </div>
@@ -170,7 +184,11 @@ function VoiceRag() {
           </form>
           <div>
             <button onClick={getFileDownload} className="ml-4">
-              <img src={downloadFile} alt="Download File" className="w-[50px] h-[50px] mt-7" />
+              <img
+                src={downloadFile}
+                alt="Download File"
+                className="w-[50px] h-[50px] mt-7"
+              />
             </button>
           </div>
         </div>

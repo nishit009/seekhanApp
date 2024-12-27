@@ -13,6 +13,8 @@ import Signup from "./components/Signup.jsx";
 import Rag from "./components/quizComponents/Rag.jsx";
 import VoiceRag from "./components/quizComponents/VoiceRag.jsx";
 import FineTune from "./components/quizComponents/FineTune.jsx";
+import { AuthProvider } from "./components/AuthorContext.jsx";
+import Git from "./components/Git.jsx";
 
 const router = createBrowserRouter([
   {
@@ -33,7 +35,7 @@ const router = createBrowserRouter([
       },
       {
         path: "about",
-        element: <About />
+        element: <About />,
       },
       {
         path: "Login",
@@ -55,12 +57,18 @@ const router = createBrowserRouter([
         path: "VoiceRag",
         element: <VoiceRag />,
       },
+      {
+        path: "git",
+        element: <Git />,
+      },
     ],
   },
 ]);
 
 createRoot(document.getElementById("root")).render(
   <>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </>
 );
