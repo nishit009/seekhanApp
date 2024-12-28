@@ -5,6 +5,13 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [history, setHistory] = useState([]);
+  const [UserName, setUserName] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [qAndAns, setQAndAns] = useState({
+    question: "",
+    generatedOutput: "",
+  });
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -36,7 +43,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout, isAdmin }}>
+    <AuthContext.Provider
+      value={{ isLoggedIn, login, logout, isAdmin, history, qAndAns }}
+    >
       {children}
     </AuthContext.Provider>
   );

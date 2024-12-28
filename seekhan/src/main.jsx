@@ -14,7 +14,9 @@ import Rag from "./components/quizComponents/Rag.jsx";
 import VoiceRag from "./components/quizComponents/VoiceRag.jsx";
 import FineTune from "./components/quizComponents/FineTune.jsx";
 import { AuthProvider } from "./components/AuthorContext.jsx";
+import History from "./components/History.jsx";
 import Git from "./components/Git.jsx";
+import ChangePassword from "./components/ChangePassword.jsx";
 
 const router = createBrowserRouter([
   {
@@ -60,6 +62,14 @@ const router = createBrowserRouter([
       {
         path: "git",
         element: <Git />,
+      },
+      {
+        path: "history",
+        element: <History />,
+      },
+      {
+        path: "ChangePassword",
+        element: <ChangePassword />,
       },
     ],
   },

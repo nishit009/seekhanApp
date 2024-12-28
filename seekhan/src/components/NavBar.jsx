@@ -1,104 +1,140 @@
-import logoimg from "./assets/logo.png";
-import logoimg1 from "./assets/updated_logo.png";
-import { useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthorContext";
 import { NavLink } from "react-router-dom";
+import logoimg1 from "./assets/updated_logo.png";
+import profileLogo from "./assets/R.png";
+
 function NavBar() {
   const navigate = useNavigate();
-  const openGit = () => {
-    navigate("/Git");
-  };
+  const [isDropdownOpen, setDropdownOpen] = useState(false); // Dropdown state
   const openSignup = () => {
     navigate("/Signup");
   };
+
   const { isLoggedIn, logout, isAdmin } = useContext(AuthContext);
 
+  const toggleDropdown = () => setDropdownOpen(!isDropdownOpen);
+
   return (
-    <>
-      <nav className="w-full h-[80px] px-[50px] flex justify-between items-center text-white bg-[#002D62] ">
-        <div className="">
-          <img src={logoimg1} className="w-auto h-[30px]" />
-        </div>
-        <ul className="flex justify-center text-center space-x-6 ">
-          <li className="mx-[3] font-bold cursor-pointer">
+    <nav className="w-full h-[80px] px-[50px] flex items-center justify-between bg-[#002D62] text-white">
+      {/* Logo Section */}
+      <div>
+        <img src={logoimg1} className="h-[30px] w-auto" alt="Logo" />
+      </div>
+
+      {/* Center Navigation Links */}
+      <ul className="flex space-x-[50px]">
+        <li className="font-bold cursor-pointer">
+          <NavLink
+            to="/home"
+            className={({ isActive }) =>
+              isActive
+                ? "underline decoration-[#59AACF] decoration-2 underline-offset-4"
+                : "hover:underline hover:decoration-[#59AACF] hover:decoration-2 hover:underline-offset-4"
+            }
+          >
+            Home
+          </NavLink>
+        </li>
+        <li className="font-bold cursor-pointer">
+          <NavLink
+            to="/about"
+            className={({ isActive }) =>
+              isActive
+                ? "underline decoration-[#59AACF] decoration-2 underline-offset-4"
+                : "hover:underline hover:decoration-[#59AACF] hover:decoration-2 hover:underline-offset-4"
+            }
+          >
+            About
+          </NavLink>
+        </li>
+        {isAdmin && (
+          <li className="font-bold cursor-pointer">
             <NavLink
-              to="/home"
+              to="/Git"
               className={({ isActive }) =>
                 isActive
-                  ? "underline decoration-[#59AACF] decoration-2 underline-offset-4" // Thin underline with a gap
+                  ? "underline decoration-[#59AACF] decoration-2 underline-offset-4"
                   : "hover:underline hover:decoration-[#59AACF] hover:decoration-2 hover:underline-offset-4"
               }
             >
-              Home
+              Git
             </NavLink>
           </li>
-          <li className="mx-[3] font-bold cursor-pointer">
+        )}
+        {isLoggedIn && (
+          <li className="font-bold cursor-pointer">
             <NavLink
-              to="/about"
+              to="/quiz"
               className={({ isActive }) =>
                 isActive
-                  ? "underline decoration-[#59AACF] decoration-2 underline-offset-4" // Thin underline with a gap
+                  ? "underline decoration-[#59AACF] decoration-2 underline-offset-4"
                   : "hover:underline hover:decoration-[#59AACF] hover:decoration-2 hover:underline-offset-4"
               }
             >
-              About
+              Quiz
             </NavLink>
           </li>
-          {isAdmin && (
-            <>
-              <li className="mx-[3] font-bold cursor-pointer">
-                <NavLink
-                  to="/Git"
-                  className={({ isActive }) =>
-                    isActive
-                      ? "underline decoration-[#59AACF] decoration-2 underline-offset-4" // Thin underline with a gap
-                      : "hover:underline hover:decoration-[#59AACF] hover:decoration-2 hover:underline-offset-4"
-                  }
-                >
-                  Git
-                </NavLink>
-              </li>
-            </>
-          )}
-          {isLoggedIn && (
-            <>
-              <li className="mx-[3] font-bold cursor-pointer">
-                <NavLink
-                  to="/quiz"
-                  className={({ isActive }) =>
-                    isActive
-                      ? "underline decoration-[#59AACF] decoration-2 underline-offset-4" // Thin underline with a gap
-                      : "hover:underline hover:decoration-[#59AACF] hover:decoration-2 hover:underline-offset-4"
-                  }
-                >
-                  Quiz
-                </NavLink>
-              </li>
-              <li className="mx-[3] font-bold cursor-pointer">
-                <button onClick={logout}>Logout</button>
-              </li>
-            </>
-          )}
-        </ul>
-        {!isLoggedIn && (
+        )}
+      </ul>
+
+      {/* Profile Section */}
+      <div className="relative flex items-center space-x-5">
+        {isLoggedIn && (
           <>
-            <div className="space-x-2">
-              <button
-                className="outline-none bg-[#59AACF] hover:bg-[#011732] w-fit h-fit px-2 font-bold py-2"
-                onClick={openSignup}
-              >
-                SignUp
-              </button>
-              {/* <button
-            className="outline-none bg-[#59AACF] hover:bg-[#011732] w-fit h-fit px-2 font-bold py-2"
-            onClick={openSignup}
-          ></button> */}
+            {/* Profile Dropdown */}
+            <div className="relative">
+              <img
+                src={profileLogo}
+                alt="Profile"
+                onClick={toggleDropdown}
+                className={`h-[40px] w-[40px] rounded-full cursor-pointer bg-blue-400 ${
+                  toggleDropdown ? "hover:bg-blue-500" : "hover:bg-gray-400"
+                }`}
+              />
+              {isDropdownOpen && (
+                <div
+                  className="absolute right-0 mt-2 w-48 bg-[#002D62] text-white rounded shadow-lg z-50"
+                  onMouseLeave={() => setDropdownOpen(false)}
+                >
+                  <button
+                    onClick={() => navigate("/history")}
+                    className="block w-full text-left px-4 py-2 hover:bg-black"
+                  >
+                    History
+                  </button>
+                  <button
+                    onClick={() => navigate("/ChangePassword")}
+                    className="block w-full text-left px-4 py-2 hover:bg-black"
+                  >
+                    Change Password
+                  </button>
+                </div>
+              )}
             </div>
+
+            {/* Separate Logout Button */}
+            <button
+              onClick={logout}
+              className="font-bold cursor-pointer hover:underline"
+            >
+              Logout
+            </button>
           </>
         )}
-      </nav>
-    </>
+
+        {!isLoggedIn && (
+          <button
+            className="outline-none bg-[#59AACF] hover:bg-[#011732] w-fit h-fit px-4 font-bold py-2"
+            onClick={openSignup}
+          >
+            SignUp
+          </button>
+        )}
+      </div>
+    </nav>
   );
 }
+
 export default NavBar;
