@@ -3,97 +3,70 @@ import downloadFile from "../assets/downloadFile.png";
 import axios from "axios";
 
 function VoiceRag() {
-  const [details, setDetails] = useState({
-    file: null,
-    questionType: "",
-    numberOfQuestions: 0,
-    loading: false,
-    answers: "",
-    mainQuestion: "",
-    id: Date.now(),
-  });
-  const [output, setOutput] = useState([]);
-
-  useEffect(() => {
-    const savedOutput = localStorage.getItem("output");
+  const [ragDetails,setRagDetails]=useState({
+    mp3File:null,
+    TypeQ:"",
+    nQuestion:0,
+    loading:false,
+    prompt:"",
+    ans:""
+  })
+  const [mp3Array,setMp3Array]=useState([])
+  useEffect(()=>{ 
+    const savedOutput = localStorage.getItem("mp3Array");
     if (savedOutput) {
-      setOutput(JSON.parse(savedOutput));
+      setMp3Array(JSON.parse(savedOutput));
     }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("output", JSON.stringify(output));
-  }, [output]);
-
-  const fileUpdate = (e) => {
-    const file = e.target.files[0];
-    setDetails((prev) => ({ ...prev, file: file }));
-  };
-
-  const getQuestions = async (e) => {
+  },[])
+  useEffect(()=>{
+    localStorage.setItem("mp3Array", JSON.stringify(mp3Array));
+  },[mp3Array])
+  const updateFile=(e)=>{
+    const file=e.target.files[0]
+    setRagDetails((prev)=>({...prev, mp3File:file}))
+  }
+  const getAns=async(e)=>{
+    e.preventDefault()
     try {
-      e.preventDefault();
-      setDetails((prev) => ({ ...prev, loading: true }));
-      const formData = new FormData();
-      formData.append("type", details.questionType);
-      formData.append("number", details.numberOfQuestions);
-      formData.append("file", details.file);
-      console.log("Hi");
-
-      const response = await axios.post(
-        "http://127.0.0.1:5000/VoiceRag",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+      setRagDetails((prev)=>({...prev ,loading:true}))
+      const dataForm= new FormData()
+      dataForm.append("type", ragDetails.TypeQ);
+      dataForm.append("number", ragDetails.nQuestion);
+      dataForm.append("file", ragDetails.mp3File);
+      const response= await axios.post("http://127.0.0.1:5000/VoiceRag",dataForm,{
+        headers:{
+          "Content-Type":"multipart/form-data"
         }
-      );
-
-      const answers = response.data.message;
-      setDetails((prev) => ({ ...prev, answers: answers }));
-      setOutput((prev) => [...prev, { ...details, answers }]);
+      })
+      const result=response.data.message
+      const prompt=`generate ${ragDetails.nQuestion} ${ragDetails.TypeQ} from this file ${ragDetails.file}`
+      setRagDetails((prev)=>({...prev,ans:result,prompt:prompt}))
+      setMp3Array((prev) => [...prev, { prompt, ans: result }])
+      
+      console.log(result)
     } catch (error) {
-      setDetails((prev) => ({ ...prev, answers: error }));
-      console.log(`this is the answers in details ${details.answers}`);
-      console.log(`Error in the POST request: ${error}`);
+      console.log(`error posting in flask ${error}`)
     }
-    setDetails((prev) => ({ ...prev, loading: false }));
-  };
-
-  const getFileDownload = async () => {
+    finally{
+      setRagDetails((prev)=>({...prev ,loading:false}))
+    }
+  }
+  const fileDownload=async()=>{
     try {
-      // Set loading state to true while processing
-      setDetails((prev) => ({ ...prev, loading: true }));
-
-      // Create a timestamp rounded to seconds (milliseconds removed)
+      setRagDetails((prev) => ({ ...prev, loading: true }));
       const timestamp = Math.floor(Date.now() / 1000);
-
-      // Create a new Blob with the answers and specify the type as plain text
-      const dataFile = new Blob([details.answers], { type: "text/plain" });
-
-      // Create a link element
+      const dataFile = new Blob([ragDetails.ans], { type: "text/plain" });
       const link = document.createElement("a");
-
-      // Set the download attribute with a filename including the question type, number of questions, and timestamp (to seconds)
-      link.download = `answers_${details.questionType}_${details.numberOfQuestions}_q_${timestamp}.txt`;
-
-      // Create a URL for the Blob and set it as the href of the link
+      link.download = `answers_${ragDetails.TypeQ}_${ragDetails.nQuestion}_q_${timestamp}.txt`;
       link.href = URL.createObjectURL(dataFile);
-
-      // Programmatically click the link to trigger the download
       link.click();
-
-      // Clean up the URL object
       URL.revokeObjectURL(link.href);
+  
     } catch (error) {
-      console.log(`Error in the file download: ${error}`);
+      console.log(`Error in the react to backend: ${error}`);
     }
-
-    // Set loading state to false once the process is complete
-    setDetails((prev) => ({ ...prev, loading: false }));
+    setRagDetails((prev) => ({ ...prev, loading: false }));
   };
-
   return (
     <div className="w-full h-screen bg-gray-900 flex items-center justify-center">
       <div className="w-[1100px] h-screen bg-gray-800 p-8 rounded-xl shadow-lg space-y-6 flex flex-col gap-y-[2px]">
@@ -101,17 +74,17 @@ function VoiceRag() {
           Generate from Transcript
         </p>
         <div className="flex-grow bg-gray-900 w-full flex flex-col h-auto overflow-y-auto scrollbar text-white">
-          {output.map((value, index) => (
-            <div key={index}>
-              <label>{value.mainQuestion}</label>
-              <p>{value.answers}</p>
+          {mp3Array.map((value, index) => (
+            <div key={index} className="bg-grey-300">
+              <label>{value.prompt}</label>
+              <p>{value.ans}</p>
             </div>
           ))}
         </div>
         <div className="flex flex-row">
           <form
             className="space-y-4 bg-gray-800 min-h-[150px] flex-grow"
-            onSubmit={getQuestions}
+            onSubmit={getAns}
           >
             <div className="flex flex-row gap-x-5">
               <div className="flex-grow space-y-2">
@@ -123,7 +96,7 @@ function VoiceRag() {
                     type="file"
                     id="file"
                     accept=".mp3"
-                    onChange={fileUpdate}
+                    onChange={updateFile}
                     className="w-full p-3 rounded-lg bg-gray-600 text-white placeholder-gray-400"
                   />
                 </div>
@@ -134,9 +107,9 @@ function VoiceRag() {
                   <select
                     name="type"
                     onChange={(e) =>
-                      setDetails((prev) => ({
+                      setRagDetails((prev) => ({
                         ...prev,
-                        questionType: e.target.value,
+                        TypeQ: e.target.value,
                       }))
                     }
                     className="w-full p-3 rounded-lg bg-gray-600 text-white placeholder-gray-400"
@@ -161,11 +134,11 @@ function VoiceRag() {
                       type="number"
                       id="questions"
                       min={1}
-                      value={details.numberOfQuestions}
+                      value={ragDetails.nQuestion}
                       onChange={(e) =>
-                        setDetails((prev) => ({
+                        setRagDetails((prev) => ({
                           ...prev,
-                          numberOfQuestions: e.target.value,
+                          nQuestion: e.target.value,
                         }))
                       }
                       className="w-full p-3 rounded-lg bg-gray-600 text-white placeholder-gray-400"
@@ -177,13 +150,13 @@ function VoiceRag() {
                   type="submit"
                   className="w-full p-3 bg-blue-600 text-white rounded-lg"
                 >
-                  {details.loading ? "Generating..." : "Generate Questions"}
+                  {ragDetails.loading ? "Generating..." : "Generate Questions"}
                 </button>
               </div>
             </div>
           </form>
           <div>
-            <button onClick={getFileDownload} className="ml-4">
+            <button onClick={fileDownload} className="ml-4">
               <img
                 src={downloadFile}
                 alt="Download File"

@@ -89,8 +89,8 @@ function NavBar() {
                 src={profileLogo}
                 alt="Profile"
                 onClick={toggleDropdown}
-                className={`h-[40px] w-[40px] rounded-full cursor-pointer bg-blue-400 ${
-                  toggleDropdown ? "hover:bg-blue-500" : "hover:bg-gray-400"
+                className={`h-[40px] w-[40px] rounded-full cursor-pointer bg-blue-800 ${
+                  toggleDropdown ? "hover:bg-blue-400" : "hover:bg-gray-400"
                 }`}
               />
               {isDropdownOpen && (
