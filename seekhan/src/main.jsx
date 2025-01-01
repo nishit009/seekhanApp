@@ -23,54 +23,22 @@ const router = createBrowserRouter([
     path: "/",
     element: <Layout />,
     children: [
-      {
-        path: "home",
-        element: <Home />,
-      },
+      { path: "", element: <Home /> },
+      { path: "home", element: <Home /> },
+      { path: "quiz", element: <Quiz /> },
       {
         path: "quiz",
         element: <Quiz />,
       },
-      {
-        path: "",
-        element: <Home />,
-      },
-      {
-        path: "about",
-        element: <About />,
-      },
-      {
-        path: "Login",
-        element: <Login />,
-      },
-      {
-        path: "signup",
-        element: <Signup />,
-      },
-      {
-        path: "FineTune",
-        element: <FineTune />,
-      },
-      {
-        path: "Rag",
-        element: <Rag />,
-      },
-      {
-        path: "VoiceRag",
-        element: <VoiceRag />,
-      },
-      {
-        path: "git",
-        element: <Git />,
-      },
-      {
-        path: "history",
-        element: <History />,
-      },
-      {
-        path: "ChangePassword",
-        element: <ChangePassword />,
-      },
+      { path: "quiz/VoiceRag", element: <VoiceRag /> },
+      { path: "quiz/Rag", element: <Rag /> },
+      { path: "quiz/FineTune", element: <FineTune /> },
+      { path: "about", element: <About /> },
+      { path: "Login", element: <Login /> },
+      { path: "signup", element: <Signup /> },
+      { path: "git", element: <Git /> },
+      { path: "history", element: <History /> },
+      { path: "ChangePassword", element: <ChangePassword /> },
     ],
   },
 ]);

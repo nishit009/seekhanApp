@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import downloadFile from "../assets/downloadFile.png";
-
+import { AuthContext } from "../AuthorContext";
 function FineTune() {
   const [topic, setTopic] = useState("");
   const [question, setQuestions] = useState(0);
@@ -8,9 +8,15 @@ function FineTune() {
   const [answers, setAnswers] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { addToHistory } = useContext(AuthContext);
 
   const pushPrompt = (answer) => {
     setAnswers((prev) => [...prev, answer]);
+    let question = `generate ${question} ${type} on the topic ${topic}`;
+    addToHistory({
+      question,
+      answers,
+    });
     setTopic("");
     setQuestions(0);
     setType("");
@@ -100,10 +106,9 @@ function FineTune() {
   return (
     <div className="w-full h-screen bg-gray-900 flex items-center justify-center">
       <div className="w-[1100px] h-screen bg-gray-800 p-8 rounded-xl shadow-lg space-y-6 flex flex-col gap-y-[2px] ">
-      <p className="text-white text-4xl font-semibold mb-8">Ask AI</p>
+        <p className="text-white text-4xl font-semibold mb-8">Ask AI</p>
 
         <div className="flex-grow bg-gray-900 w-full flex flex-col h-auto overflow-y-auto scrollbar text-white">
-          
           {error && (
             <div className="bg-red-600 text-white p-2 rounded-lg ">
               <strong>Error:</strong> {error}

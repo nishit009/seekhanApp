@@ -1,57 +1,66 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import downloadFile from "../assets/downloadFile.png";
 import axios from "axios";
+import { AuthContext } from "../AuthorContext";
 
 function VoiceRag() {
-  const [ragDetails,setRagDetails]=useState({
-    mp3File:null,
-    TypeQ:"",
-    nQuestion:0,
-    loading:false,
-    prompt:"",
-    ans:""
-  })
-  const [mp3Array,setMp3Array]=useState([])
-  useEffect(()=>{ 
+  const [ragDetails, setRagDetails] = useState({
+    mp3File: null,
+    TypeQ: "",
+    nQuestion: 0,
+    loading: false,
+    prompt: "",
+    ans: "",
+  });
+  const [mp3Array, setMp3Array] = useState([]);
+  const { addToHistory } = useContext(AuthContext);
+  useEffect(() => {
     const savedOutput = localStorage.getItem("mp3Array");
     if (savedOutput) {
       setMp3Array(JSON.parse(savedOutput));
     }
-  },[])
-  useEffect(()=>{
+  }, []);
+  useEffect(() => {
     localStorage.setItem("mp3Array", JSON.stringify(mp3Array));
-  },[mp3Array])
-  const updateFile=(e)=>{
-    const file=e.target.files[0]
-    setRagDetails((prev)=>({...prev, mp3File:file}))
-  }
-  const getAns=async(e)=>{
-    e.preventDefault()
+  }, [mp3Array]);
+  const updateFile = (e) => {
+    const file = e.target.files[0];
+    setRagDetails((prev) => ({ ...prev, mp3File: file }));
+  };
+  const getAns = async (e) => {
+    e.preventDefault();
     try {
-      setRagDetails((prev)=>({...prev ,loading:true}))
-      const dataForm= new FormData()
+      setRagDetails((prev) => ({ ...prev, loading: true }));
+      const dataForm = new FormData();
       dataForm.append("type", ragDetails.TypeQ);
       dataForm.append("number", ragDetails.nQuestion);
       dataForm.append("file", ragDetails.mp3File);
-      const response= await axios.post("http://127.0.0.1:5000/VoiceRag",dataForm,{
-        headers:{
-          "Content-Type":"multipart/form-data"
+      const response = await axios.post(
+        "http://127.0.0.1:5000/VoiceRag",
+        dataForm,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
-      })
-      const result=response.data.message
-      const prompt=`generate ${ragDetails.nQuestion} ${ragDetails.TypeQ} from this file ${ragDetails.file}`
-      setRagDetails((prev)=>({...prev,ans:result,prompt:prompt}))
-      setMp3Array((prev) => [...prev, { prompt, ans: result }])
-      
-      console.log(result)
+      );
+      const result = response.data.message;
+      const prompt = `generate ${ragDetails.nQuestion} ${ragDetails.TypeQ} from this file ${ragDetails.file}`;
+      setRagDetails((prev) => ({ ...prev, ans: result, prompt: prompt }));
+      setMp3Array((prev) => [...prev, { prompt, ans: result }]);
+      addToHistory({
+        prompt,
+        result,
+      });
+
+      console.log(result);
     } catch (error) {
-      console.log(`error posting in flask ${error}`)
+      console.log(`error posting in flask ${error}`);
+    } finally {
+      setRagDetails((prev) => ({ ...prev, loading: false }));
     }
-    finally{
-      setRagDetails((prev)=>({...prev ,loading:false}))
-    }
-  }
-  const fileDownload=async()=>{
+  };
+  const fileDownload = async () => {
     try {
       setRagDetails((prev) => ({ ...prev, loading: true }));
       const timestamp = Math.floor(Date.now() / 1000);
@@ -61,7 +70,6 @@ function VoiceRag() {
       link.href = URL.createObjectURL(dataFile);
       link.click();
       URL.revokeObjectURL(link.href);
-  
     } catch (error) {
       console.log(`Error in the react to backend: ${error}`);
     }

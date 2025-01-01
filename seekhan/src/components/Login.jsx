@@ -19,7 +19,6 @@ function Login() {
         }),
       });
 
-      // Check if the response is OK
       if (!response.ok) {
         const errorResult = await response.json();
         alert(errorResult.message || "An error occurred. Please try again.");
@@ -29,7 +28,7 @@ function Login() {
       const result = await response.json();
       if (result.success) {
         console.log(result);
-        login(result.message);
+        login(result.message, result.userid);
         alert("Login successful! Redirecting to home page...");
         navigate("/home");
       }

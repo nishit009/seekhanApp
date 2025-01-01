@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import downloadFile from "../assets/downloadFile.png";
 import axios from "axios";
+import { AuthContext } from "../AuthorContext";
 
 function Rag() {
   const [details, setDetails] = useState({
@@ -10,17 +11,18 @@ function Rag() {
     loading: false,
     answers: "",
     mainQuestion: "",
-    id: Date.now()
+    id: Date.now(),
   });
   const [output, setOutput] = useState([]);
-  
+  const { addToHistory } = useContext(AuthContext);
+
   useEffect(() => {
     const savedOutput = localStorage.getItem("output");
     if (savedOutput) {
       setOutput(JSON.parse(savedOutput));
     }
   }, []);
-  
+
   useEffect(() => {
     localStorage.setItem("output", JSON.stringify(output));
   }, [output]);
@@ -46,6 +48,11 @@ function Rag() {
       const answers = response.data.message;
       setDetails((prev) => ({ ...prev, answers: answers }));
       setOutput((prev) => [...prev, { ...details, answers }]);
+      let prompt = `generate ${details.numberOfQuestions} ${details.questionType} from this file ${details.file}`;
+      addToHistory({
+        prompt,
+        answers,
+      });
     } catch (error) {
       console.log(`error is this in post request ${error}`);
     }
@@ -54,47 +61,29 @@ function Rag() {
 
   const getFileDownload = async () => {
     try {
-      // Set loading state to true while processing
       setDetails((prev) => ({ ...prev, loading: true }));
-  
-      // Create a timestamp rounded to seconds (milliseconds removed)
       const timestamp = Math.floor(Date.now() / 1000);
-  
-      // Create a new Blob with the answers and specify the type as plain text
       const dataFile = new Blob([details.answers], { type: "text/plain" });
-  
-      // Create a link element
       const link = document.createElement("a");
-  
-      // Set the download attribute with a filename including the question type, number of questions, and timestamp (to seconds)
       link.download = `answers_${details.questionType}_${details.numberOfQuestions}_q_${timestamp}.txt`;
-  
-      // Create a URL for the Blob and set it as the href of the link
       link.href = URL.createObjectURL(dataFile);
-  
-      // Programmatically click the link to trigger the download
       link.click();
-  
-      // Clean up the URL object
       URL.revokeObjectURL(link.href);
-  
     } catch (error) {
       console.log(`Error in the react to backend: ${error}`);
     }
-  
-    // Set loading state to false once the process is complete
     setDetails((prev) => ({ ...prev, loading: false }));
   };
-  
-  
 
   return (
     <div className="w-full h-screen bg-gray-900 flex items-center justify-center">
       <div className="w-[1100px] h-screen bg-gray-800 p-8 rounded-xl shadow-lg space-y-6 flex flex-col gap-y-[2px]">
-      <p className="text-white text-4xl font-semibold mb-8">Generate from PDF</p>
+        <p className="text-white text-4xl font-semibold mb-8">
+          Generate from PDF
+        </p>
 
         <div className="flex-grow bg-gray-900 w-full flex flex-col h-auto overflow-y-auto scrollbar text-white">
-          {output.map((value,index) => (
+          {output.map((value, index) => (
             <div key={index}>
               <label>{value.mainQuestion}</label>
               <p>{value.answers}</p>

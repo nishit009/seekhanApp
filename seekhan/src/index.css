@@ -1,3 +1,7 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+10.11.17.255:3000 or 229
+db.getSiblingDB('test').employees.find({
+  $or: [{ department: 'Engineering' }, { age: { $gt: 40 }}]
+})
