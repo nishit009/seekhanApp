@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import downloadFile from "../assets/downloadFile.png";
 import { AuthContext } from "../AuthorContext";
+import axios from "axios";
 
 function FineTune() {
   const [topic, setTopic] = useState("");
@@ -25,19 +26,9 @@ function FineTune() {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:5000/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          Topic: topic,
-          noQ: question,
-          Type: type,
-        }),
-      });
-      setAnswers(response.Result);
-      pushPrompt(response.Result);
+      const response=await axios.post("http://127.0.0.1:5000/submit",{Topic:topic,noQ:question,Type:type})
+      setAnswers((prev)=>([...prev,response.data.message]));
+      pushPrompt(response.data.message);
 
       // if (response.ok) {
       //   try {

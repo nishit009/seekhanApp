@@ -12,7 +12,7 @@ function NavBar() {
     navigate("/Signup");
   };
 
-  const { isLoggedIn, logout, isAdmin } = useContext(AuthContext);
+  const { isLoggedIn, logout, isAdmin,username } = useContext(AuthContext);
 
   const toggleDropdown = () => setDropdownOpen(!isDropdownOpen);
 
@@ -98,6 +98,9 @@ function NavBar() {
                   className="absolute right-0 mt-2 w-48 bg-[#002D62] text-white rounded shadow-lg z-50"
                   onMouseLeave={() => setDropdownOpen(false)}
                 >
+                 <div className="block w-full text-left px-4 py-2 bg-black">
+                    welcome {username} !
+                  </div>
                   <button
                     onClick={() => navigate("/history")}
                     className="block w-full text-left px-4 py-2 hover:bg-black"
@@ -108,6 +111,7 @@ function NavBar() {
                     onClick={() => navigate("/ChangePassword")}
                     className="block w-full text-left px-4 py-2 hover:bg-black"
                   >
+
                     Change Password
                   </button>
                 </div>

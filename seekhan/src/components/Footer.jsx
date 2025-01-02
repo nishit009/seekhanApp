@@ -11,7 +11,7 @@ function Footer() {
             alt="logo"
             className="w-auto h-[50px] font-bold text-2xl"
           />
-          <p>Email: projectseekhan@gmail.com</p>
+          <a href="https://mail.google.com/mail/u/0/#inbox?compose=CllgCJvqsbNWzfVvfNxTCqSNnpqNdvxvxqWjphMbwKNhsxgvGSCXbZqxTjKMQlNkpHhgnbpnzcL">Email: projectseekhan@gmail.com</a>
           <p>
             Instagram:{" "}
             <a

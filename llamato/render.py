@@ -119,10 +119,10 @@ def submit():
             result = model.invoke(input=prompt)
             torch.cuda.empty_cache()
             logging.info(f"Questions generated successfully for topic: {topic} result: {result}")
-            return jsonify({"Result": result})
+            return jsonify({"message": result})
         else:
             torch.cuda.empty_cache()
-            return jsonify({"Result":f"Sorry, the topic '{topic}' is out of the domain of computer science. Try again with a relevant topic."})
+            return jsonify({"message":f"Sorry, the topic '{topic}' is out of the domain of computer science. Try again with a relevant topic."})
         # result = model.invoke(input=prompt)
         # logging.info(f"Questions generated successfully for topic: {topic} result: {result}")
         # return jsonify({"Result": result})

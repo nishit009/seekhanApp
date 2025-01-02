@@ -14,15 +14,15 @@ function VoiceRag() {
   });
   const [mp3Array, setMp3Array] = useState([]);
   const { addToHistory } = useContext(AuthContext);
-  useEffect(() => {
-    const savedOutput = localStorage.getItem("mp3Array");
-    if (savedOutput) {
-      setMp3Array(JSON.parse(savedOutput));
-    }
-  }, []);
-  useEffect(() => {
-    localStorage.setItem("mp3Array", JSON.stringify(mp3Array));
-  }, [mp3Array]);
+  // useEffect(() => {
+  //   const savedOutput = localStorage.getItem("mp3Array");
+  //   if (savedOutput) {
+  //     setMp3Array(JSON.parse(savedOutput));
+  //   }
+  // }, []);
+  // useEffect(() => {
+  //   localStorage.setItem("mp3Array", JSON.stringify(mp3Array));
+  // }, [mp3Array]);
   const updateFile = (e) => {
     const file = e.target.files[0];
     setRagDetails((prev) => ({ ...prev, mp3File: file }));

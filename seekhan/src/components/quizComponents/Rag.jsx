@@ -16,16 +16,16 @@ function Rag() {
   const [output, setOutput] = useState([]);
   const { addToHistory } = useContext(AuthContext);
 
-  useEffect(() => {
-    const savedOutput = localStorage.getItem("output");
-    if (savedOutput) {
-      setOutput(JSON.parse(savedOutput));
-    }
-  }, []);
+  // useEffect(() => {
+  //   const savedOutput = localStorage.getItem("output");
+  //   if (savedOutput) {
+  //     setOutput(JSON.parse(savedOutput));
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    localStorage.setItem("output", JSON.stringify(output));
-  }, [output]);
+  // useEffect(() => {
+  //   localStorage.setItem("output", JSON.stringify(output));
+  // }, [output]);
 
   const fileUpdate = (e) => {
     const file = e.target.files[0];

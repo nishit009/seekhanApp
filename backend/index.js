@@ -9,6 +9,7 @@ import multer from "multer";
 import os from "os";
 import path from "path";
 import bcrypt from "bcrypt";
+import { HistoryModel } from "./models/history.models.js";
 
 const app = express();
 const PORT = 6969;
@@ -37,12 +38,14 @@ app.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({ email: emailId });
     if (!user) {
+      console.log(user)
       return res
         .status(404)
         .json({ success: false, message: "User not found" });
     }
     const isPasswordValid = await bcrypt.compare(HashPw, user.password);
     if (!isPasswordValid) {
+      console.log(isPasswordValid)
       return res
         .status(401)
         .json({ success: false, message: "Invalid password" });
@@ -74,13 +77,14 @@ app.post("/signup", async (req, res) => {
         .status(409)
         .json({ success: false, message: "User already exists" });
     }
-
+    const newSign= new sign({firstname:fname,lastname:lname,email:emailId,phoneno:pno,gender:gen,password:HashPw})
+    const signsaved=await newSign.save()
     const newUser = new User({
       email: emailId,
       password: HashPw,
     });
 
-    await newUser.save();
+    const saved=await newUser.save();
     res
       .status(201)
       .json({ success: true, message: "Signup successful", user: newUser });
@@ -164,3 +168,33 @@ app.post("/voicerag", upload.single("file"), async (req, res) => {
     res.status(500).json({ error: "Something went wrong" });
   }
 });
+app.post("http://localhost:5173/storeHistory",async(req,res)=> { 
+  try {
+    const {userid,history}=req.data
+    const pastuser= HistoryModel.findOneAndUpdate({userId:userid,historyRes:history})
+    if(!pastuser)
+    {
+      const newHistory=new HistoryModel({userId:userid,historyRes:history})
+      await newHistory.save()
+    }
+    res.status(200).json({"message":"saved it "})
+
+  } catch (error) {
+    console.log(`error in seting the history ${error}`)
+  }
+})
+app.get("http://localhost:5173/getHistory/:userId",async (req,res) => {
+  try {
+    const userid=req.params.userId
+    const array= HistoryModel.findOne({userid})
+    const reqArray=array.historyRes
+    if(array)
+    {
+      res.status(200).json({"message":reqArray})
+    }
+    
+  } catch (error) {
+    console.log(`error in seting the history ${error}`)
+  }
+
+})
