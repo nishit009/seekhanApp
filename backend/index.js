@@ -47,18 +47,17 @@ app.post("/login", async (req, res) => {
         .status(401)
         .json({ success: false, message: "Invalid password" });
     }
-
+    if (emailId === "admin@gmail.com" && HashPw === "iamadmin") {
+      return res
+        .status(200)
+        .json({ success: true, message: "admin", userid: user._id });
+    }
     res.status(200).json({
       success: true,
       message: "Login successful",
       userid: user._id,
       user,
     });
-    if (emailId === "admin@gmail.com" && HashPw === "iamadmin") {
-      return res
-        .status(200)
-        .json({ success: true, message: "admin", userid: user._id });
-    }
   } catch (error) {
     console.error(`Error during login: ${error.message}`);
     res.status(500).json({ success: false, message: "Server error" });
@@ -78,7 +77,7 @@ app.post("/signup", async (req, res) => {
 
     const newUser = new User({
       email: emailId,
-      password: HashPw, 
+      password: HashPw,
     });
 
     await newUser.save();
