@@ -13,13 +13,10 @@ function FineTune() {
 
   const pushPrompt = (answer) => {
     const questionText = `Generate ${question} ${type} questions on the topic "${topic}"`;
-    const formattedAnswers = Array.isArray(answer) ? answer : [answer];
-    addToHistory(questionText, formattedAnswers);
-
+    addToHistory(questionText, answer);
     setTopic("");
     setQuestions(0);
     setType("");
-    setAnswers([]);
   };
 
   const pushAll = async (e) => {
@@ -39,28 +36,27 @@ function FineTune() {
           Type: type,
         }),
       });
-      const result = await response.json();
-      setAnswers(result.Result);
-      pushPrompt(result.Result);
+      setAnswers(response.Result);
+      pushPrompt(response.Result);
 
-      if (response.ok) {
-        try {
-          await fetch("http://localhost:6969/prompt", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              userPrompt: `Generate ${question} ${type} questions on ${topic}`,
-              answer: result.Result,
-            }),
-          });
-        } catch (backendError) {
-          console.error(`Backend error: ${backendError.message}`);
-        }
-      } else {
-        setError(result.error || "Something went wrong");
-      }
+      // if (response.ok) {
+      //   try {
+      //     await fetch("http://localhost:6969/prompt", {
+      //       method: "POST",
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //       body: JSON.stringify({
+      //         userPrompt: `Generate ${question} ${type} questions on ${topic}`,
+      //         answer: result.Result,
+      //       }),
+      //     });
+      //   } catch (backendError) {
+      //     console.error(`Backend error: ${backendError.message}`);
+      //   }
+      // } else {
+      //   setError(result.error || "Something went wrong");
+      // }
     } catch (fetchError) {
       setError("Error connecting to the backend");
       console.error("Error:", fetchError);

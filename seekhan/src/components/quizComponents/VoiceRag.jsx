@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import downloadFile from "../assets/downloadFile.png";
 import axios from "axios";
 import { AuthContext } from "../AuthorContext";
@@ -48,10 +48,7 @@ function VoiceRag() {
       const prompt = `generate ${ragDetails.nQuestion} ${ragDetails.TypeQ} from this file ${ragDetails.file}`;
       setRagDetails((prev) => ({ ...prev, ans: result, prompt: prompt }));
       setMp3Array((prev) => [...prev, { prompt, ans: result }]);
-      addToHistory({
-        prompt,
-        result,
-      });
+      addToHistory(prompt, result);
 
       console.log(result);
     } catch (error) {

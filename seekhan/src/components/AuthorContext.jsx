@@ -5,7 +5,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [history, setHistory] = useState([]); // Stores the history
+  const [history, setHistory] = useState([]); // Stores the history of prompt-result pairs
   const [userId, setUserId] = useState(null);
   const [qAndAns, setQAndAns] = useState({
     question: "",
@@ -58,10 +58,7 @@ export const AuthProvider = ({ children }) => {
 
   // Adds a question-answer pair to the history
   const addToHistory = (question, answer) => {
-    const newEntry = {
-      question: question,
-      answers: Array.isArray(answer) ? answer : [answer],
-    };
+    const newEntry = { question, answer }; // Directly stores the strings
 
     setHistory((prev) => {
       const updatedHistory = [...prev, newEntry];

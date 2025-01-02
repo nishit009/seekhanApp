@@ -49,10 +49,7 @@ function Rag() {
       setDetails((prev) => ({ ...prev, answers: answers }));
       setOutput((prev) => [...prev, { ...details, answers }]);
       let prompt = `generate ${details.numberOfQuestions} ${details.questionType} from this file ${details.file}`;
-      addToHistory({
-        prompt,
-        answers,
-      });
+      addToHistory(prompt, answers);
     } catch (error) {
       console.log(`error is this in post request ${error}`);
     }
