@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import downloadFile from "../assets/downloadFile.png";
 import { AuthContext } from "../AuthorContext";
+
 function FineTune() {
   const [topic, setTopic] = useState("");
   const [question, setQuestions] = useState(0);
@@ -11,15 +12,14 @@ function FineTune() {
   const { addToHistory } = useContext(AuthContext);
 
   const pushPrompt = (answer) => {
-    setAnswers((prev) => [...prev, answer]);
-    let question = `generate ${question} ${type} on the topic ${topic}`;
-    addToHistory({
-      question,
-      answers,
-    });
+    const questionText = `Generate ${question} ${type} questions on the topic "${topic}"`;
+    const formattedAnswers = Array.isArray(answer) ? answer : [answer];
+    addToHistory(questionText, formattedAnswers);
+
     setTopic("");
     setQuestions(0);
     setType("");
+    setAnswers([]);
   };
 
   const pushAll = async (e) => {
@@ -40,31 +40,30 @@ function FineTune() {
         }),
       });
       const result = await response.json();
-      console.log(result);
+      setAnswers(result.Result);
+      pushPrompt(result.Result);
+
       if (response.ok) {
-        pushPrompt(result.Result);
         try {
-          const res = await fetch("http://localhost:6969/prompt", {
+          await fetch("http://localhost:6969/prompt", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              userPrompt: `generate ${question} ${type} questions on ${topic}`,
-              answer: result,
+              userPrompt: `Generate ${question} ${type} questions on ${topic}`,
+              answer: result.Result,
             }),
           });
-          const backendResponse = await res.json();
-          console.log(backendResponse);
-        } catch (error) {
-          console.log(`error is this: ${error}`);
+        } catch (backendError) {
+          console.error(`Backend error: ${backendError.message}`);
         }
       } else {
         setError(result.error || "Something went wrong");
       }
-    } catch (error) {
+    } catch (fetchError) {
       setError("Error connecting to the backend");
-      console.error("Error:", error);
+      console.error("Error:", fetchError);
     } finally {
       setLoading(false);
     }
@@ -72,35 +71,20 @@ function FineTune() {
 
   const getFileDownload = async () => {
     try {
-      // Set loading state to true while processing
       setLoading(true);
-
-      // Create a timestamp rounded to seconds (milliseconds removed)
       const timestamp = Math.floor(Date.now() / 1000);
-
-      // Create a new Blob with the answers and specify the type as plain text
       const dataFile = new Blob([answers.join("\n")], { type: "text/plain" });
-
-      // Create a link element
       const link = document.createElement("a");
 
-      // Set the download attribute with a filename including the question type, number of questions, and timestamp (to seconds)
       link.download = `answers_${type}_${question}_q_${timestamp}.txt`;
-
-      // Create a URL for the Blob and set it as the href of the link
       link.href = URL.createObjectURL(dataFile);
-
-      // Programmatically click the link to trigger the download
       link.click();
-
-      // Clean up the URL object
       URL.revokeObjectURL(link.href);
-    } catch (error) {
-      console.log(`Error in the react to backend: ${error}`);
+    } catch (downloadError) {
+      console.error(`Download error: ${downloadError.message}`);
+    } finally {
+      setLoading(false);
     }
-
-    // Set loading state to false once the process is complete
-    setLoading(false);
   };
 
   return (
@@ -156,7 +140,6 @@ function FineTune() {
                     className="w-full p-3 rounded-lg bg-gray-600 text-white placeholder-gray-400"
                     onChange={(e) => setType(e.target.value)}
                     value={type}
-                    defaultValue=""
                   >
                     <option value="" disabled>
                       ------- Select Question Type -------

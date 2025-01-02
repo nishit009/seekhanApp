@@ -5,8 +5,8 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [history, setHistory] = useState([]); 
-  const [userId, setUserId] = useState(null); 
+  const [history, setHistory] = useState([]); // Stores the history
+  const [userId, setUserId] = useState(null);
   const [qAndAns, setQAndAns] = useState({
     question: "",
     generatedOutput: "",
@@ -16,16 +16,22 @@ export const AuthProvider = ({ children }) => {
     const storedToken = localStorage.getItem("token");
     const storedUserId = localStorage.getItem("userId");
     const isAdminStored = localStorage.getItem("isAdmin") === "true";
+    const storedHistory = localStorage.getItem("history");
 
     if (storedToken) {
       setIsLoggedIn(true);
       setIsAdmin(isAdminStored);
       setUserId(storedUserId);
+      if (storedHistory) {
+        setHistory(JSON.parse(storedHistory));
+      }
     }
   }, []);
 
+  // Helper to generate a token (for demonstration)
   const generateToken = () => Date.now();
 
+  // Handles user login
   const login = (result, userId) => {
     const isAdminFlag = result === "admin";
     setIsAdmin(isAdminFlag);
@@ -37,18 +43,31 @@ export const AuthProvider = ({ children }) => {
     setUserId(userId);
   };
 
+  // Handles user logout
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("isAdmin");
     localStorage.removeItem("userId");
-    window.location.href = "/";
+    localStorage.removeItem("history");
     setIsLoggedIn(false);
     setIsAdmin(false);
     setUserId(null);
+    setHistory([]);
+    window.location.href = "/";
   };
 
-  const addToHistory = (newEntry) => {
-    setHistory((prev) => [...prev, newEntry]);
+  // Adds a question-answer pair to the history
+  const addToHistory = (question, answer) => {
+    const newEntry = {
+      question: question,
+      answers: Array.isArray(answer) ? answer : [answer],
+    };
+
+    setHistory((prev) => {
+      const updatedHistory = [...prev, newEntry];
+      localStorage.setItem("history", JSON.stringify(updatedHistory)); // Persist to localStorage
+      return updatedHistory;
+    });
   };
 
   return (
@@ -59,7 +78,7 @@ export const AuthProvider = ({ children }) => {
         logout,
         isAdmin,
         history,
-        addToHistory, 
+        addToHistory, // Add questions and answers to history
         qAndAns,
         setQAndAns,
       }}
