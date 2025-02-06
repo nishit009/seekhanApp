@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(
   cors({
     origin: ["http://localhost:5173", "http://127.0.0.1:5000"],
-    methods: ["POST", "GET"],
+    methods: ["POST", "GET", "PUT"],
     credentials: true,
   })
 );
@@ -38,14 +38,14 @@ app.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({ email: emailId });
     if (!user) {
-      console.log(user)
+      console.log(user);
       return res
         .status(404)
         .json({ success: false, message: "User not found" });
     }
     const isPasswordValid = await bcrypt.compare(HashPw, user.password);
     if (!isPasswordValid) {
-      console.log(isPasswordValid)
+      console.log(isPasswordValid);
       return res
         .status(401)
         .json({ success: false, message: "Invalid password" });
@@ -77,14 +77,21 @@ app.post("/signup", async (req, res) => {
         .status(409)
         .json({ success: false, message: "User already exists" });
     }
-    const newSign= new sign({firstname:fname,lastname:lname,email:emailId,phoneno:pno,gender:gen,password:HashPw})
-    const signsaved=await newSign.save()
+    const newSign = new sign({
+      firstname: fname,
+      lastname: lname,
+      email: emailId,
+      phoneno: pno,
+      gender: gen,
+      password: HashPw,
+    });
+    const signsaved = await newSign.save();
     const newUser = new User({
       email: emailId,
       password: HashPw,
     });
 
-    const saved=await newUser.save();
+    const saved = await newUser.save();
     res
       .status(201)
       .json({ success: true, message: "Signup successful", user: newUser });
@@ -168,33 +175,39 @@ app.post("/voicerag", upload.single("file"), async (req, res) => {
     res.status(500).json({ error: "Something went wrong" });
   }
 });
-app.post("http://localhost:5173/storeHistory",async(req,res)=> { 
+app.put("/storeHistory/:userid", async (req, res) => {
   try {
-    const {userid,history}=req.data
-    const pastuser= HistoryModel.findOneAndUpdate({userId:userid,historyRes:history})
-    if(!pastuser)
-    {
-      const newHistory=new HistoryModel({userId:userid,historyRes:history})
-      await newHistory.save()
-    }
-    res.status(200).json({"message":"saved it "})
-
+    const userid = req.params.userid;
+    const { history } = req.body;
+    const checkIt = await HistoryModel.findOneAndUpdate(
+      {
+        userId: userid,
+      },
+      { historyRes: history },
+      { upsert: true, new: true }
+    );
+    console.log(`updated the model ${checkIt.historyRes}`);
+    res.status(200).json({ message: "saved it " });
   } catch (error) {
-    console.log(`error in seting the history ${error}`)
+    console.log(`error in seting the history ${error}`);
   }
-})
-app.get("http://localhost:5173/getHistory/:userId",async (req,res) => {
+});
+app.get("/getHistory/:userId", async (req, res) => {
   try {
-    const userid=req.params.userId
-    const array= HistoryModel.findOne({userid})
-    const reqArray=array.historyRes
-    if(array)
-    {
-      res.status(200).json({"message":reqArray})
+    const userid = req.params.userId;
+    const findUser = await HistoryModel.findOne({ userId: userid });
+    if (findUser) {
+      console.log(findUser.historyRes);
+      res.status(200).json({ message: findUser.historyRes });
+    } else {
+      const newList = [];
+      const newHistory = new HistoryModel({
+        userId: userid,
+        historyRes: newList,
+      });
+      await newHistory.save();
     }
-    
   } catch (error) {
-    console.log(`error in seting the history ${error}`)
+    console.log(`error in seting the history ${error}`);
   }
-
-})
+});

@@ -105,7 +105,7 @@ def submit():
             "Penetration Testing",
             "Information Retrieval"
         ]
-        model_path=r"C:\Users\spent\Downloads\distilbart_model"
+        model_path=r"C:\Users\nishi\Downloads\distilbart_model"
         model1=AutoModelForSequenceClassification.from_pretrained(model_path)
         tokenizerr=AutoTokenizer.from_pretrained(model_path)
         classifier = pipeline(
@@ -128,7 +128,7 @@ def submit():
         # return jsonify({"Result": result})
     except Exception as e:
         logging.error(f"Error generating questions: {e}")
-        return jsonify({"error": f"Internal server error: {str(e)}"}), 500
+        return jsonify({"message": f"Internal server error: {str(e)}"}), 500
 
 # @app.route("/Rag", methods=["POST", "GET"])
 # def main():
