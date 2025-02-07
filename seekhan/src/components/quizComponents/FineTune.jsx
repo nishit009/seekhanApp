@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
-import downloadFile from "../assets/downloadFile.png";
 import { AuthContext } from "../AuthorContext";
 import axios from "axios";
+import "../assets/DownloadButton.css"; // Ensure you have the CSS for styling
 
 function FineTune() {
   const [topic, setTopic] = useState("");
@@ -26,28 +26,13 @@ function FineTune() {
     setError(null);
 
     try {
-      const response=await axios.post("http://127.0.0.1:5000/submit",{Topic:topic,noQ:question,Type:type})
-      setAnswers((prev)=>([...prev,response.data.message]));
+      const response = await axios.post("http://127.0.0.1:5000/submit", {
+        Topic: topic,
+        noQ: question,
+        Type: type,
+      });
+      setAnswers((prev) => [...prev, response.data.message]);
       pushPrompt(response.data.message);
-
-      // if (response.ok) {
-      //   try {
-      //     await fetch("http://localhost:6969/prompt", {
-      //       method: "POST",
-      //       headers: {
-      //         "Content-Type": "application/json",
-      //       },
-      //       body: JSON.stringify({
-      //         userPrompt: `Generate ${question} ${type} questions on ${topic}`,
-      //         answer: result.Result,
-      //       }),
-      //     });
-      //   } catch (backendError) {
-      //     console.error(`Backend error: ${backendError.message}`);
-      //   }
-      // } else {
-      //   setError(result.error || "Something went wrong");
-      // }
     } catch (fetchError) {
       setError("Error connecting to the backend");
       console.error("Error:", fetchError);
@@ -62,7 +47,6 @@ function FineTune() {
       const timestamp = Math.floor(Date.now() / 1000);
       const dataFile = new Blob([answers.join("\n")], { type: "text/plain" });
       const link = document.createElement("a");
-
       link.download = `answers_${type}_${question}_q_${timestamp}.txt`;
       link.href = URL.createObjectURL(dataFile);
       link.click();
@@ -87,9 +71,7 @@ function FineTune() {
           )}
           {answers.length > 0 && (
             <div className="bg-gray-700 text-white p-4 rounded-lg">
-              <h3 className="font-semibold text-xl mb-2">
-                Generated Questions
-              </h3>
+              <h3 className="font-semibold text-xl mb-2">Generated Questions</h3>
               {answers.map((value, index) => (
                 <div className="bg-gray-600 p-2 mb-2 rounded-lg" key={index}>
                   <p>{value}</p>
@@ -165,12 +147,11 @@ function FineTune() {
             </div>
           </form>
           <div>
-            <button onClick={getFileDownload}>
-              <img
-                src={downloadFile}
-                alt="Download File"
-                className="w-[50px] h-[50px] mt-5"
-              />
+            <button className="Btn" onClick={getFileDownload}>
+              <svg className="svgIcon" viewBox="0 0 384 512" height="1em">
+                <path d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z" />
+              </svg>
+              <span className="tooltip">Download</span>
             </button>
           </div>
         </div>

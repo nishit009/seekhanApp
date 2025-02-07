@@ -15,7 +15,7 @@ function Quiz() {
     <div className="w-full h-screen bg-gray-900 flex items-center justify-center flex-col">
       <p className="text-white text-4xl font-semibold mb-8">Choose an Option</p>
 
-      <div className="lg:w-[795px] h-[495px] bg-[#002D62] rounded-xl hover:bg-gray-900 flex flex-row flex-wrap items-center justify-center gap-x-2">
+      <div className="lg:w-[795px] h-[495px]  rounded-xl hover:bg-gray-900 flex flex-row flex-wrap items-center justify-center gap-x-2">
         {/* Option: Lecture File */}
         <div className="lg:w-[200px] h-[300px] bg-gray-900 rounded-xl flex justify-center items-center">
           <div className="lg:w-[195px] h-[295px] bg-[#002D62] rounded-xl hover:bg-gray-900">

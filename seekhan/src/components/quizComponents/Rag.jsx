@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import downloadFile from "../assets/downloadFile.png";
+import "../assets/DownloadButton.css";
 import axios from "axios";
 import { AuthContext } from "../AuthorContext";
 
@@ -58,19 +58,20 @@ function Rag() {
 
   const getFileDownload = async () => {
     try {
-      setDetails((prev) => ({ ...prev, loading: true }));
       const timestamp = Math.floor(Date.now() / 1000);
-      const dataFile = new Blob([details.answers], { type: "text/plain" });
+      const dataFile = new Blob([answers.join("\n")], { type: "text/plain" });
       const link = document.createElement("a");
-      link.download = `answers_${details.questionType}_${details.numberOfQuestions}_q_${timestamp}.txt`;
+      link.download = `answers_${type}_${question}_q_${timestamp}.txt`;
       link.href = URL.createObjectURL(dataFile);
+      document.body.appendChild(link); // Append to body before clicking
       link.click();
+      document.body.removeChild(link); // Remove after clicking
       URL.revokeObjectURL(link.href);
-    } catch (error) {
-      console.log(`Error in the react to backend: ${error}`);
+    } catch (downloadError) {
+      console.error(`Download error: ${downloadError.message}`);
     }
-    setDetails((prev) => ({ ...prev, loading: false }));
   };
+  
 
   return (
     <div className="w-full h-screen bg-gray-900 flex items-center justify-center">
@@ -161,13 +162,13 @@ function Rag() {
             </div>
           </form>
           <div>
-            <button onClick={getFileDownload} className="ml-4">
-              <img
-                src={downloadFile}
-                alt="Download File"
-                className="w-[50px] h-[50px] mt-7"
-              />
-            </button>
+          <button className="Btn" onClick={getFileDownload}>
+  <svg className="svgIcon" viewBox="0 0 384 512" height="1em">
+    <path d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z" />
+  </svg>
+  <span className="tooltip">Download</span>
+</button>
+
           </div>
         </div>
       </div>

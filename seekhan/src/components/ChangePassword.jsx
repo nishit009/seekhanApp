@@ -3,7 +3,7 @@ import React from "react";
 function ChangePassword() {
   return (
     <>
-      <div>hello</div>
+      <div>Comming soon!!!</div>
     </>
   );
 }
